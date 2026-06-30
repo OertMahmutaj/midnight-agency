@@ -47,7 +47,7 @@ export default function PeoplePage() {
               <button
                 key={member.name}
                 onClick={() => setActive(index)}
-                className={`group flex items-center gap-5 text-left transition-all duration-300 w-full ${
+                className={`group flex items-center gap-5 text-left transition-all duration-300 cursor-pointer w-full ${
                   active === index ? "text-white" : "text-white/35"
                 }`}
               >

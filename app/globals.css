@@ -113,3 +113,12 @@ textarea:-webkit-autofill {
   from { transform: perspective(1000px) rotateY(0deg); }
   to { transform: perspective(1000px) rotateY(360deg); }
 }
+
+/* @keyframes onAutoFillStart {
+  from { opacity: 1; }
+  to { opacity: 1; }
+}
+
+input:-webkit-autofill {
+  animation-name: onAutoFillStart;
+} */

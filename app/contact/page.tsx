@@ -110,7 +110,7 @@ export default function ContactPage() {
                 autoComplete="name"
                 placeholder="Your Name"
                 required
-                className="min-w-0 w-full border-0 border-b border-white/45 bg-transparent px-0 py-4 text-base text-white outline-none transition-colors placeholder:text-white/85 focus:border-[#E37D30] [color-scheme:dark]"
+                className="min-w-0 w-full border-0 border-b border-white/45 bg-black px-0 py-4 text-base text-white outline-none transition-colors placeholder:text-white/85 focus:border-[#E37D30] [color-scheme:dark]"
               />
 
               <input
@@ -119,7 +119,7 @@ export default function ContactPage() {
                 autoComplete="email"
                 placeholder="Your Email"
                 required
-                className="min-w-0 w-full border-0 border-b border-white/45 bg-transparent px-0 py-4 text-base text-white outline-none transition-colors placeholder:text-white/85 focus:border-[#E37D30] [color-scheme:dark]"
+                className="min-w-0 w-full border-0 border-b border-white/45 bg-black px-0 py-4 text-base text-white outline-none transition-colors placeholder:text-white/85 focus:border-[#E37D30] [color-scheme:dark]"
               />
 
               <textarea
@@ -127,7 +127,7 @@ export default function ContactPage() {
                 rows={3}
                 placeholder="Share your thoughts"
                 required
-                className="min-w-0 w-full resize-none border-0 border-b border-white/45 bg-transparent px-0 py-4 text-base text-white outline-none transition-colors placeholder:text-white/85 focus:border-[#E37D30] [color-scheme:dark]"
+                className="min-w-0 w-full resize-none border-0 border-b border-white/45 bg-black px-0 py-4 text-base text-white outline-none transition-colors placeholder:text-white/85 focus:border-[#E37D30] [color-scheme:dark]"
               />
 
               <div className="mx-auto mt-8 w-full max-w-[calc(100vw-2rem)] overflow-hidden px-3 py-4 sm:max-w-md sm:overflow-visible sm:px-0 sm:py-0">

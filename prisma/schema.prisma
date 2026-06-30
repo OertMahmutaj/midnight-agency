@@ -1,0 +1,17 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model ContactLog {
+  id        Int      @id @default(autoincrement())
+  ip        String
+  email     String
+  name      String
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+}

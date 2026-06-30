@@ -5,11 +5,17 @@
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Force scrollbar hiding on all browsers */
+@layer base {
+  html, body {
+    scrollbar-width: none !important;      /* Firefox */
+    -ms-overflow-style: none !important;  /* IE and Edge */
+  }
+
+  html::-webkit-scrollbar, 
+  body::-webkit-scrollbar {
+    display: none !important;             /* Chrome, Safari, Opera */
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,9 +24,80 @@
     --foreground: #ededed;
   }
 }
-
-body {
-  background: var(--background);
-  color: var(--foreground);
+/* 1. Base Setup */
+html, body {
+  margin: 0;
+  padding: 0;
+  /* background-size: 150px;  */
+  background-repeat: repeat;
+  opacity: 1;
+  color: #ffffff;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* The parent container is the actual 'hub' */
+.slider {
+  position: relative;
+  width: 175px;
+  height: 175px;
+  transform-style: preserve-3d;
+  /* Rotate the whole container */
+  animation: autoRun 40s linear infinite;
+  /* Crucial: ensure it rotates around its own center */
+  transform-origin: 87.5px 87.5px; 
+}
+
+/* The items are now just positioned faces on the hub */
+.item {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #080808;
+  color: rgb(255, 255, 255);
+  width: 175px;
+  height: 175px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backface-visibility: hidden;
+  /* Push them out from the center to form the shape */
+  transform: rotateY(calc((var(--position) - 1) * 60deg)) translateZ(150px);
+}
+.bold-link {
+  display: inline-block;
+  text-align: center;
+  /* Reserve space for the widest version of the text */
+  min-width: 4ch; 
+  /* Transitions are only allowed on properties that don't shift layout */
+  transition: transform 0.5s ease;
+}
+
+/* Use a data-attribute to handle the text swap cleanly */
+.bold-link::after {
+  content: "bold.";
+  display: block;
+  font-weight: inherit;
+  transition: all 0.5s ease;
+}
+
+.bold-link:hover::after {
+  content: "BOLD.";
+  letter-spacing: 0.02em;
+}
+
+.grain-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Pushed behind everything */
+  pointer-events: none; /* Ignore all clicks */
+  background-image: url("/images.jpg");
+  opacity: 0.09; /* Adjusted visibility */
+}
+
+@keyframes autoRun {
+  from { transform: perspective(1000px) rotateY(0deg); }
+  to { transform: perspective(1000px) rotateY(360deg); }
 }

@@ -116,8 +116,8 @@ export default function ServicesPage() {
         <motion.div variants={rise} className="relative min-h-[360px] overflow-hidden lg:min-h-[620px]">
           <div className="absolute left-1/2 top-10 h-[280px] w-[280px] -translate-x-1/2 rounded-[46%_54%_58%_42%/45%_42%_58%_55%] border border-white/14 sm:h-[380px] sm:w-[380px] lg:left-[12%] lg:h-[500px] lg:w-[500px] lg:translate-x-0" />
 
-          <div className="relative z-10 mx-auto h-[360px] w-full max-w-[420px] sm:h-[460px] sm:max-w-[560px] lg:h-[620px] lg:max-w-none">
-            <Canvas camera={{ position: [0, 0, 7.8], fov: 45 }}>
+          <div className="relative z-10 mx-auto h-[360px] w-full max-w-[420px] sm:h-[460px] sm:max-w-[560px] lg:h-[620px] lg:max-w-none cursor-pointer">
+            <Canvas camera={{ position: [0, 0, 7.8], fov: 45 }} >
               <ambientLight intensity={0.55} />
               <directionalLight position={[10, 10, 5]} intensity={1.15} />
               <Environment preset="city" />

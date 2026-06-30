@@ -3,7 +3,7 @@
 import { useState, Suspense, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Environment, Text, useTexture } from '@react-three/drei';
+import { Environment, Text, useTexture, OrbitControls } from '@react-three/drei';
 import { Mesh } from 'three';
 
 const smoothEase = [0.76, 0, 0.24, 1] as const;
@@ -168,7 +168,7 @@ export default function ContactPage() {
         >
           <div className="absolute left-1/2 top-8 h-[280px] w-[280px] max-w-[78vw] -translate-x-1/2 rounded-[46%_54%_58%_42%/45%_42%_58%_55%] border border-white/18 sm:h-[360px] sm:w-[360px] lg:left-[8%] lg:top-[6%] lg:h-[430px] lg:w-[430px] lg:translate-x-0" />
 
-          <div className="relative z-10 mx-auto h-[300px] w-full max-w-[360px] sm:h-[380px] sm:max-w-[460px] lg:h-[520px] lg:max-w-none">
+          <div className="relative z-10 mx-auto h-[300px] w-full max-w-[360px] sm:h-[380px] sm:max-w-[460px] lg:h-[520px] lg:max-w-none cursor-pointer">
             <Canvas
               camera={{
                 position: [0, 0, 6.8],
@@ -181,6 +181,7 @@ export default function ContactPage() {
               <Suspense fallback={null}>
                 <ContactCube />
                 <Environment preset="city" />
+                <OrbitControls enableZoom={false} enablePan={false} />
               </Suspense>
             </Canvas>
           </div>

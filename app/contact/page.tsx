@@ -107,6 +107,7 @@ export default function ContactPage() {
               <input
                 name="name"
                 type="text"
+                autoComplete="name"
                 placeholder="Your Name"
                 required
                 className="min-w-0 w-full border-0 border-b border-white/45 bg-transparent px-0 py-4 text-base text-white outline-none transition-colors placeholder:text-white/85 focus:border-[#E37D30] [color-scheme:dark]"
@@ -115,6 +116,7 @@ export default function ContactPage() {
               <input
                 name="email"
                 type="email"
+                autoComplete="email"
                 placeholder="Your Email"
                 required
                 className="min-w-0 w-full border-0 border-b border-white/45 bg-transparent px-0 py-4 text-base text-white outline-none transition-colors placeholder:text-white/85 focus:border-[#E37D30] [color-scheme:dark]"

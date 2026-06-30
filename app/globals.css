@@ -97,6 +97,18 @@ html, body {
   opacity: 0.09; /* Adjusted visibility */
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill {
+  -webkit-text-fill-color: white !important;
+  -webkit-box-shadow: 0 0 0 1000px #000 inset !important; /* match your actual bg, not transparent */
+  box-shadow: 0 0 0 1000px #000 inset !important;
+  caret-color: white;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
 @keyframes autoRun {
   from { transform: perspective(1000px) rotateY(0deg); }
   to { transform: perspective(1000px) rotateY(360deg); }

@@ -7,7 +7,6 @@ import { useTexture } from '@react-three/drei';
 
 export default function ServiceCube() {
     const meshRef = useRef<Mesh>(null!);
-    // const grainTexture = useTexture('/grunge-dusty-noise-grainy-texture-background_1008660-1715.avif');
     const grainTexture = useTexture('/images.jpg');
 
     useFrame((state, delta) => {
@@ -25,6 +24,7 @@ export default function ServiceCube() {
         <mesh
             ref={meshRef}
             rotation={[-0.5, 0, 0]} // Initial Tilt: x, y, z
+            scale={0.9}
         >
             <boxGeometry args={[3.1, 3.1, 3.1]} />
             <meshStandardMaterial 

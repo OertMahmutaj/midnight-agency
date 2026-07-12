@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 type WordScrambleTextProps = {
   value: string;
@@ -10,6 +10,7 @@ type WordScrambleTextProps = {
   intervalMs?: number;
   steps?: number;
   randomize?: boolean;
+  playOnMount?: boolean;
 };
 
 // const DEFAULT_CHARS =
@@ -26,6 +27,7 @@ export default function WordScrambleText({
   intervalMs = 40,
   steps,
   randomize = true,
+  playOnMount = false,
 }: WordScrambleTextProps) {
   const [text, setText] = useState(value);
   const timeoutRef = useRef<number | null>(null);
@@ -38,23 +40,23 @@ export default function WordScrambleText({
 
   const maxLength = Math.max(value.length, hoverValue.length);
 
-  function clearScramble() {
+  const clearScramble = useCallback(() => {
     if (timeoutRef.current !== null) {
       window.clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
-  }
+  }, []);
 
-  function getRandomCharacter(index: number) {
+  const getRandomCharacter = useCallback((index: number) => {
     if (!randomize) {
       return characterPool[index % characterPool.length];
     }
 
     const randomIndex = Math.floor(Math.random() * characterPool.length);
     return characterPool[randomIndex];
-  }
+  }, [characterPool, randomize]);
 
-  function scramble(nextValue: string) {
+  const scramble = useCallback((nextValue: string) => {
     clearScramble();
 
     const paddedValue = nextValue.padEnd(maxLength, ' ');
@@ -96,7 +98,7 @@ export default function WordScrambleText({
     };
 
     tick();
-  }
+  }, [clearScramble, getRandomCharacter, intervalMs, maxLength, steps]);
 
   // useEffect(() => {
   //   setText(value);
@@ -104,7 +106,19 @@ export default function WordScrambleText({
 
   useEffect(() => {
     return clearScramble;
-  }, []);
+  }, [clearScramble]);
+
+  useEffect(() => {
+    if (!playOnMount) {
+      return;
+    }
+
+    const animationFrame = window.requestAnimationFrame(() => {
+      scramble(hoverValue);
+    });
+
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [hoverValue, playOnMount, scramble]);
 
   return (
     <span

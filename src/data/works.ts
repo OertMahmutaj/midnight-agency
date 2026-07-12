@@ -6,75 +6,89 @@ export type WorkItem = {
   industry: string;
   services: string[];
   summary: string;
+  challenge: string;
+  solution: string;
+  deliverables: string[];
   image: string;
-  imageFit?: string;
-  stats: {
-    label: string;
-    value: string;
-  }[];
+  gallery: string[];
 };
+
+function numberedImages(slug: string, first: number, last: number) {
+  return Array.from({ length: last - first + 1 }, (_, index) => {
+    const number = String(first + index).padStart(2, '0');
+
+    return `/work/${slug}/${number}.png`;
+  });
+}
 
 export const works: WorkItem[] = [
   {
-    slug: 'mern-cms',
-    title: 'MERN CMS',
-    client: 'Studio OS',
+    slug: 'creative-cult',
+    title: 'Creativ Cult',
+    client: 'Creativ Cult',
     year: '2026',
-    industry: 'Content system',
-    services: ['React', 'Node.js', 'MongoDB'],
+    industry: 'Creative agency',
+    services: ['Brand implementation', 'Visual systems', 'Digital design'],
     summary:
-      'A modular publishing dashboard with role-based editing flows and fast collection management.',
-    image: '/work/mern-cms.jpg',
-    stats: [
-      { label: 'Stack', value: 'MERN' },
-      { label: 'Focus', value: 'CMS' },
+      'A dynamic marketing and creative agency focused on bold communication and unconventional brand strategies.',
+    challenge:
+      'The agency had a core logo but lacked a unified visual language to support it. The challenge was to take the existing mark and architect a complete brand ecosystem, translating the Cult philosophy into a rigorous, scalable, and high-impact visual system for corporate and digital environments.',
+    solution:
+      "We developed a comprehensive identity system based on a strict geometric grid, deriving graphic patterns and layout structures directly from the logo's angles. A high-contrast typographic hierarchy and modular design language make every touchpoint feel like a natural extension of the brand's core DNA, balancing creative edge with professional authority.",
+    deliverables: [
+      'Website design',
+      'Brochure trifold',
+      'Business cards',
+      'Instagram feed templates',
     ],
+    image: '/work/creative-cult/01.png',
+    gallery: numberedImages('creative-cult', 2, 6),
   },
   {
-    slug: 'signal-launch',
-    title: 'Signal Launch',
-    client: 'Signal',
+    slug: 'optimus-pharma',
+    title: 'Optimus Pharma',
+    client: 'Optimus Pharma',
     year: '2026',
-    industry: 'Brand activation',
-    services: ['Next.js', 'Motion', 'Identity'],
+    industry: 'Pharmaceutical distribution',
+    services: ['Brand strategy', 'Identity redesign', 'Packaging'],
     summary:
-      'A cinematic launch page with sharp campaign beats and high-contrast art direction.',
-    image: '/work/signal-launch.png',
-    stats: [
-      { label: 'Format', value: 'Launch' },
-      { label: 'Output', value: 'Web' },
+      'A leading pharmaceutical distributor in Tirana, specializing in the wholesale and logistics of medical products.',
+    challenge:
+      "The existing identity was outdated and no longer communicated the company's growth or professional evolution. The objective was a complete brand overhaul that could project authority, reliability, and modern standards across print and digital touchpoints.",
+    solution:
+      "We developed a minimalist mark that fuses the brand's initial O with a stylized capsule icon, creating a cohesive and recognizable symbol of precision. Deep navy and fresh teal support the identity, communicating trust, clinical excellence, and innovation.",
+    deliverables: [
+      'Brand identity and strategy',
+      'Brand guidelines',
+      'Corporate stationery',
+      'Promotional merchandise',
+      'Packaging',
+      'Social media design system',
     ],
+    image: '/work/optimus-pharma/01.png',
+    gallery: numberedImages('optimus-pharma', 2, 8),
   },
   {
-    slug: 'nocturne-lab',
-    title: 'Nocturne Lab',
-    client: 'Nocturne',
-    year: '2025',
-    industry: 'Interactive studio',
-    services: ['Three.js', 'UX', 'WebGL'],
+    slug: 'vp-consulting',
+    title: 'VP Consulting',
+    client: 'VP Consulting',
+    year: '2026',
+    industry: 'Business consulting',
+    services: ['Logo design', 'Brand identity', 'Corporate design'],
     summary:
-      'A tactile web experience built around motion, texture, and rich product storytelling.',
-    image: '/work/nocturne-lab.jpg',
-    imageFit: 'object-contain bg-black',
-    stats: [
-      { label: 'Medium', value: '3D' },
-      { label: 'Mode', value: 'Lab' },
+      'A strategic advisory firm providing business solutions, financial planning, and management consulting for corporate clients.',
+    challenge:
+      'The previous identity felt generic and lacked the executive character needed to build trust with high-net-worth clients. The challenge was to create a monogram that felt timeless, authoritative, and stable while remaining suitable for a digital-first business environment.',
+    solution:
+      'We designed a sophisticated monogram by intersecting the letters V and P within a perfect circle, symbolizing holistic support and 360-degree consulting. Its geometric construction stays clear at every scale, while a vibrant yellow accent against a dark palette combines strategic optimism with professional gravity.',
+    deliverables: [
+      'Executive brand identity',
+      'Monogram design',
+      'Corporate stationery',
+      'Visual style guide',
     ],
-  },
-  {
-    slug: 'atlas-ops',
-    title: 'Atlas Ops',
-    client: 'Atlas',
-    year: '2025',
-    industry: 'Operations portal',
-    services: ['Dashboard', 'Systems', 'Data'],
-    summary:
-      'A dense internal tool redesigned for speed, clarity, and repeatable daily workflows.',
-    image: '/work/atlas-ops.jpg',
-    stats: [
-      { label: 'Product', value: 'Portal' },
-      { label: 'Focus', value: 'Ops' },
-    ],
+    image: '/work/vp-consulting/01.png',
+    gallery: numberedImages('vp-consulting', 2, 6),
   },
 ];
 

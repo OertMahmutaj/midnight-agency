@@ -35,36 +35,29 @@ const columns = [
 
 export default function Footer() {
   return (
-    <footer className="mt-24 flex min-h-screen flex-col border-t border-black/10 bg-[#eeeeee] text-[#111111]">
-      <div className="mx-auto w-full max-w-7xl flex-1 px-6 py-16 md:px-10 lg:px-16 lg:py-20">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+    <footer className="mt-16 flex flex-col border-t border-black/10 bg-[#eeeeee] text-[#111111] sm:mt-24">
+      <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8 sm:py-16 md:px-10 lg:px-16 lg:py-20">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {columns.map((column) => (
-            <div key={column.title}>
-              <h3 className="mb-8 text-[11px] font-bold uppercase tracking-[0.45em] text-black/35">
+            <div key={column.title} className="min-w-0">
+              <h3 className="mb-6 text-[10px] font-bold uppercase tracking-[0.36em] text-black/35 sm:mb-8 sm:text-[11px] sm:tracking-[0.45em]">
                 {column.title}
               </h3>
 
               {'intro' in column && column.intro ? (
-                <p className="mb-5 max-w-[12rem] text-sm leading-6 text-black/45">
-                  {column.intro}
-                </p>
+                <p className="mb-5 max-w-[14rem] text-sm leading-6 text-black/45">{column.intro}</p>
               ) : null}
 
-              <ul className="space-y-4 text-sm text-black/85">
+              <ul className="space-y-3 text-sm text-black/85 sm:space-y-4">
                 {column.links.map((item) => {
                   const label = typeof item === 'string' ? item : item.label;
                   const href = typeof item === 'string' ? '#' : item.href;
 
                   return (
-                    <li key={label}>
-                      <Link
-                        href={href}
-                        className="group inline-flex items-center gap-2 transition-colors duration-300 hover:text-[#E37D30]"
-                      >
-                        <span className="text-black/45 transition-colors duration-300 group-hover:text-[#E37D30]">
-                          ›
-                        </span>
-                        {label}
+                    <li key={label} className="min-w-0">
+                      <Link href={href} className="group inline-flex max-w-full items-start gap-2 break-words transition-colors duration-300 hover:text-[#E37D30]">
+                        <span className="shrink-0 text-black/45 transition-colors duration-300 group-hover:text-[#E37D30]">›</span>
+                        <span className="min-w-0 break-all sm:break-words">{label}</span>
                       </Link>
                     </li>
                   );
@@ -76,18 +69,12 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-black/10">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-12 md:px-10 lg:flex-row lg:items-end lg:justify-between lg:px-16 lg:py-16">
-          <h2 className="max-w-4xl text-[clamp(3.2rem,8vw,7.8rem)] font-black uppercase leading-[0.82] text-[#E37D30]">
-            Building
-            <br />
-            Bridges
-            <br />
-            Together.
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-5 py-10 sm:px-8 sm:py-12 md:px-10 lg:flex-row lg:items-end lg:justify-between lg:px-16 lg:py-16">
+          <h2 className="max-w-4xl break-words text-[clamp(2.65rem,11vw,7.8rem)] font-black uppercase leading-[0.82] tracking-[-0.04em] text-[#E37D30]">
+            Building<br />Bridges<br />Together.
           </h2>
 
-          <p className="text-sm text-black/40">
-            © {new Date().getFullYear()} Midnight. All rights reserved.
-          </p>
+          <p className="text-xs text-black/40 sm:text-sm">© {new Date().getFullYear()} Midnight. All rights reserved.</p>
         </div>
       </div>
     </footer>

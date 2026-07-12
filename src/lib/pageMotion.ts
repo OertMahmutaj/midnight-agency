@@ -28,3 +28,5 @@ export const pageRise: Variants = {
     },
   },
 };
+
+export const headingRise = pageRise;

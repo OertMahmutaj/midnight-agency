@@ -1,12 +1,11 @@
 'use client';
 
-import Link from 'next/link';
-import { motion, type Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Canvas } from '@react-three/fiber';
 import { Environment, OrbitControls } from '@react-three/drei';
+import MidnightButton from '@/src/components/MidnightButton';
 import ServiceCube from '@/src/components/ServiceCube';
-
-const smoothEase = [0.76, 0, 0.24, 1] as const;
+import { pageContainer as container, pageRise as rise } from '@/src/lib/pageMotion';
 
 const services = [
   {
@@ -38,47 +37,12 @@ const process = [
   ['04', 'Launch'],
 ];
 
-const container: Variants = {
-  hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.16,
-    },
-  },
-};
-
-const rise: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 70,
-    clipPath: 'inset(18% 0 0 0)',
-  },
-  show: {
-    opacity: 1,
-    y: 0,
-    clipPath: 'inset(0% 0 0 0)',
-    transition: {
-      duration: 0.85,
-      ease: smoothEase,
-    },
-  },
-};
-
 function PersonaButton() {
   return (
-    <div className="mt-8 w-full max-w-[15rem] ml-3 lg:ml-8 lg:py-5 overflow-visible sm:px-0">
-      <Link
-        href="/contact"
-        className="group relative isolate inline-flex h-14 w-full overflow-visible text-[10px] font-black uppercase tracking-[0.06em] text-white sm:h-16 sm:text-xs"
-      >
-        <span className="absolute inset-0 z-[1] translate-x-[5px] translate-y-[5px] bg-white transition-all duration-300 [clip-path:polygon(5%_18%,92%_5%,88%_22%,100%_18%,94%_82%,12%_95%,15%_78%,0_84%)] group-hover:translate-x-[7px] group-hover:translate-y-[6px] group-hover:bg-black sm:translate-x-[10px] sm:translate-y-[8px] sm:group-hover:translate-x-[15px] sm:group-hover:translate-y-[10px] sm:group-hover:rotate-[1.5deg]" />
-        <span className="absolute inset-0 z-[2] -translate-x-[4px] -translate-y-[4px] bg-[#E37D30] transition-transform duration-300 [clip-path:polygon(5%_18%,92%_5%,88%_22%,100%_18%,94%_82%,12%_95%,15%_78%,0_84%)] group-hover:-translate-x-[6px] group-hover:-translate-y-[5px] sm:-translate-x-[8px] sm:-translate-y-[7px] sm:group-hover:-translate-x-[16px] sm:group-hover:-translate-y-[10px] sm:group-hover:-rotate-2" />
-        <span className="absolute inset-0 z-[3] bg-black transition-all duration-300 [clip-path:polygon(5%_18%,92%_5%,88%_22%,100%_18%,94%_82%,12%_95%,15%_78%,0_84%)] group-hover:-translate-x-[4px] group-hover:-translate-y-[2px] group-hover:bg-white sm:group-hover:-translate-x-[7px] sm:group-hover:-translate-y-[3px] sm:group-hover:-rotate-[1.2deg]" />
-        <span className="relative z-[4] flex h-full w-full items-center justify-center px-5 text-center text-white transition-all duration-300 group-hover:text-black sm:px-6 sm:group-hover:-translate-x-2">
-          Start A Project
-        </span>
-      </Link>
+    <div className="mt-8 w-full max-w-[16rem] overflow-visible px-3 py-3 sm:px-0 lg:ml-8 lg:mt-10">
+      <MidnightButton href="/contact">
+        Start A Project
+      </MidnightButton>
     </div>
   );
 }

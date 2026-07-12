@@ -5,16 +5,19 @@
   --foreground: #171717;
 }
 
-/* Force scrollbar hiding on all browsers */
+/* Hide scrollbar chrome everywhere while keeping scroll behavior. */
 @layer base {
-  html, body {
+  *, html, body {
     scrollbar-width: none !important;      /* Firefox */
     -ms-overflow-style: none !important;  /* IE and Edge */
   }
 
+  *::-webkit-scrollbar,
   html::-webkit-scrollbar, 
   body::-webkit-scrollbar {
     display: none !important;             /* Chrome, Safari, Opera */
+    width: 0 !important;
+    height: 0 !important;
   }
 }
 
@@ -97,28 +100,7 @@ html, body {
   opacity: 0.09; /* Adjusted visibility */
 }
 
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active,
-textarea:-webkit-autofill {
-  -webkit-text-fill-color: white !important;
-  -webkit-box-shadow: 0 0 0 1000px #000 inset !important; /* match your actual bg, not transparent */
-  box-shadow: 0 0 0 1000px #000 inset !important;
-  caret-color: white;
-  transition: background-color 9999s ease-in-out 0s;
-}
-
 @keyframes autoRun {
   from { transform: perspective(1000px) rotateY(0deg); }
   to { transform: perspective(1000px) rotateY(360deg); }
 }
-
-/* @keyframes onAutoFillStart {
-  from { opacity: 1; }
-  to { opacity: 1; }
-}
-
-input:-webkit-autofill {
-  animation-name: onAutoFillStart;
-} */

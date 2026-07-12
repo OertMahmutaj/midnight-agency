@@ -1,246 +1,165 @@
 'use client';
 
 import Image from 'next/image';
-import { MouseEvent, useState } from 'react';
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-  type Variants,
-} from 'framer-motion';
+import Link from 'next/link';
+import { motion, type Variants } from 'framer-motion';
+import { works, type WorkItem } from '@/src/data/works';
+import { pageContainer as container, pageRise as reveal, smoothEase } from '@/src/lib/pageMotion';
 
-const smoothEase = [0.76, 0, 0.24, 1] as const;
-
-const projects = [
-  {
-    title: 'MERN CMS',
-    kicker: 'Content system',
-    description: 'A modular publishing dashboard with role-based editing flows and fast collection management.',
-    tags: ['React', 'Node.js', 'MongoDB'],
-    year: '2026',
-    image: '/work/mern-cms.jpg',
-    span: 'lg:col-span-7',
-    imageFit: 'object-cover',
-    titleSize: 'text-[clamp(2.4rem,5.8vw,6.6rem)]',
-  },
-  {
-    title: 'Signal Launch',
-    kicker: 'Brand activation',
-    description: 'A cinematic launch page with sharp campaign beats and high-contrast art direction.',
-    tags: ['Next.js', 'Motion', 'Identity'],
-    year: '2026',
-    image: '/work/signal-launch.png',
-    span: 'lg:col-span-5',
-    imageFit: 'object-cover',
-    titleSize: 'text-[clamp(2.4rem,5.8vw,6.6rem)]',
-  },
-  {
-    title: 'Nocturne Lab',
-    kicker: 'Interactive studio',
-    description: 'A tactile web experience built around motion, texture, and rich product storytelling.',
-    tags: ['Three.js', 'UX', 'WebGL'],
-    year: '2025',
-    image: '/work/nocturne-lab.jpg',
-    span: 'lg:col-span-5',
-    imageFit: 'object-contain bg-black',
-    titleSize: 'text-[clamp(2rem,4.7vw,4.9rem)]',
-  },
-  {
-    title: 'Atlas Ops',
-    kicker: 'Operations portal',
-    description: 'A dense internal tool redesigned for speed, clarity, and repeatable daily workflows.',
-    tags: ['Dashboard', 'Systems', 'Data'],
-    year: '2025',
-    image: '/work/atlas-ops.jpg',
-    span: 'lg:col-span-7',
-    imageFit: 'object-cover',
-    titleSize: 'text-[clamp(2.4rem,5.8vw,6.6rem)]',
-  },
-];
-
-const container: Variants = {
-  hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.15,
-    },
-  },
-};
-
-const reveal: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 96,
-    scale: 0.96,
-    clipPath: 'inset(18% 0 0 0)',
-  },
-  show: {
-    opacity: 1,
+const imageMotion: Variants = {
+  rest: {
     y: 0,
-    scale: 1,
-    clipPath: 'inset(0% 0 0 0)',
+  },
+  hover: {
+    y: -152,
     transition: {
-      duration: 0.5,
+      duration: 0.35,
       ease: smoothEase,
     },
   },
 };
 
-const cardReveal: Variants = {
-  hidden: {
+const desktopDetails: Variants = {
+  rest: {
     opacity: 0,
-    y: 140,
-    scale: 0.94,
-    clipPath: 'inset(28% 0 0 0)',
+    y: 56,
   },
-  show: {
+  hover: {
     opacity: 1,
     y: 0,
-    scale: 1,
-    clipPath: 'inset(0% 0 0 0)',
     transition: {
-      duration: 1.5,
+      duration: 0.35,
       ease: smoothEase,
     },
   },
 };
+
+function WorkDetails({ work }: { work: WorkItem }) {
+  return (
+    <div>
+      <div className="mb-3 flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.22em] text-white/38">
+        <span>{work.client}</span>
+        <span className="h-px w-8 bg-white/18" />
+        <span>{work.industry}</span>
+      </div>
+
+      <h2 className="text-xl font-black uppercase leading-none text-white md:text-2xl">
+        {work.title}
+      </h2>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        {work.services.map((service) => (
+          <span
+            key={service}
+            className="rounded-full border border-white/10 bg-white/[0.035] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-white/52"
+          >
+            {service}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function WorkCard({ work, index }: { work: WorkItem; index: number }) {
+  return (
+    <motion.div variants={reveal}>
+      <Link href={`/work/${work.slug}`} className="group block outline-none">
+        <motion.article
+          initial="rest"
+          whileHover="hover"
+          whileFocus="hover"
+          className="relative overflow-hidden rounded-[8px] border border-white/8 bg-[#080808] outline-none"
+        >
+          <motion.div
+            variants={imageMotion}
+            className="relative z-10 aspect-[1.5/1] overflow-hidden bg-[#080808] will-change-transform"
+          >
+            <Image
+              src={work.image}
+              alt={work.title}
+              fill
+              sizes="(max-width: 768px) 100vw, 48vw"
+              loading={index < 4 ? 'eager' : 'lazy'}
+              className={`${work.imageFit ?? 'object-cover'} object-center`}
+            />
+
+            <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/10 group-focus-visible:bg-black/10" />
+
+            <div className="absolute left-4 top-4 flex gap-2 text-[10px] font-black uppercase tracking-[0.22em] text-white/82">
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <span className="text-white/28">/</span>
+              <span>{work.year}</span>
+            </div>
+          </motion.div>
+
+          <div className="p-4 md:hidden">
+            <WorkDetails work={work} />
+          </div>
+
+          <motion.div
+            variants={desktopDetails}
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-20 hidden p-5 md:block"
+          >
+            <WorkDetails work={work} />
+          </motion.div>
+        </motion.article>
+      </Link>
+    </motion.div>
+  );
+}
 
 export default function WorkPage() {
-  const [activeProject, setActiveProject] = useState(projects[0]);
-
-  const cursorX = useMotionValue(0);
-  const cursorY = useMotionValue(0);
-  const smoothX = useSpring(cursorX, { stiffness: 180, damping: 28, mass: 0.35 });
-  const smoothY = useSpring(cursorY, { stiffness: 180, damping: 28, mass: 0.35 });
-  const rotate = useTransform(smoothX, [0, 1400], [-8, 8]);
-
-  function handleMouseMove(event: MouseEvent<HTMLElement>) {
-    cursorX.set(event.clientX - 120);
-    cursorY.set(event.clientY - 90);
-  }
-
   return (
-    <main
-      onMouseMove={handleMouseMove}
-      className="relative min-h-screen overflow-x-hidden px-5 pb-8 pt-28 text-white md:px-10 lg:px-16"
-    >
-      <motion.div
-        aria-hidden
-        style={{ x: smoothX, y: smoothY, rotate }}
-        className="pointer-events-none fixed left-0 top-0 z-0 hidden h-40 w-56 overflow-hidden border border-white/15 bg-black shadow-2xl shadow-black/60 md:block"
-      >
-        <Image
-          src={activeProject.image}
-          alt=""
-          fill
-          sizes="224px"
-          loading="eager"
-          className="object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-black/25" />
-      </motion.div>
-
-      <section className="relative z-10 mx-auto grid max-w-7xl gap-8">
-        <motion.div
+    <main className="relative min-h-screen overflow-x-hidden px-5 pb-20 pt-28 text-white md:px-10 lg:px-16 lg:pt-32">
+      <section className="mx-auto max-w-7xl">
+        <motion.header
           variants={container}
           initial="hidden"
           animate="show"
-          className="grid gap-5 border-b border-white/15 pb-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end"
+          className="grid gap-10 border-b border-white/12 pb-10 lg:grid-cols-[0.72fr_1fr] lg:items-end"
         >
-          <div className="overflow-hidden">
+          <div>
             <motion.p
               variants={reveal}
-              className="mb-4 text-xs font-black uppercase tracking-[0.35em] text-[#E37D30]"
+              className="mb-5 text-[10px] font-black uppercase tracking-[0.42em] text-[#E37D30]"
             >
               Selected Work
             </motion.p>
 
             <motion.h1
               variants={reveal}
-              className="max-w-5xl text-[clamp(3.5rem,12vw,10rem)] font-black uppercase leading-[0.78]"
+              className="max-w-[8ch] text-[clamp(3.4rem,10vw,8rem)] font-black uppercase leading-[0.78]"
             >
-              Case Index
+              Bold Builds Brands.
             </motion.h1>
           </div>
 
-          <motion.p
-            variants={reveal}
-            className="max-w-xl text-sm leading-relaxed text-white/60 md:ml-auto md:text-base"
-          >
-            A motion-led portfolio wall with sharp reveals, oversized type, and image panels that open as you move through the work.
-          </motion.p>
-        </motion.div>
+          <motion.div variants={reveal} className="grid gap-8 lg:justify-items-end">
+            <p className="max-w-xl text-sm leading-7 text-white/58 md:text-base">
+              A growing archive of brand systems, launch pages, interactive builds, and digital tools shaped for sharp first impressions.
+            </p>
+
+            <div className="flex flex-wrap gap-x-5 gap-y-3 text-[10px] font-black uppercase tracking-[0.24em] text-white/45">
+              <span>Branding</span>
+              <span className="text-white/18">/</span>
+              <span>Web</span>
+              <span className="text-white/18">/</span>
+              <span>Motion</span>
+              <span className="text-white/18">/</span>
+              <span>Systems</span>
+            </div>
+          </motion.div>
+        </motion.header>
 
         <motion.div
           variants={container}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:auto-rows-[clamp(320px,42vh,520px)]"
+          className="mt-8 grid gap-x-6 gap-y-12 md:grid-cols-2 md:gap-y-14"
         >
-          {projects.map((project, index) => (
-            <motion.article
-              key={project.title}
-              variants={cardReveal}
-              onMouseEnter={() => setActiveProject(project)}
-              onFocus={() => setActiveProject(project)}
-              tabIndex={0}
-              className={`${project.span} group relative isolate flex min-h-[380px] overflow-hidden border border-white/12 bg-[#080808] outline-none transition-colors duration-500 hover:border-white/35 focus-visible:border-[#E37D30] lg:min-h-0`}
-            >
-              <motion.div
-                className="absolute inset-0"
-                initial={false}
-                whileHover={{ scale: 1.04 }}
-                transition={{ duration: 0.8, ease: smoothEase }}
-              >
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 58vw"
-                  loading="eager"
-                  className={`${project.imageFit} object-center`}
-                />
-              </motion.div>
-
-              <div className="absolute inset-0 bg-black/25 transition-colors duration-500 md:bg-black/0 md:group-hover:bg-black/62" />
-              <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-black via-black/70 to-transparent opacity-100 md:opacity-0 md:transition-opacity md:duration-500 md:group-hover:opacity-100" />
-
-              <div className="relative z-10 flex h-full w-full flex-col justify-between overflow-hidden p-5 md:p-7">
-                <div className="flex items-start justify-between gap-4 text-xs font-black uppercase tracking-[0.24em] text-white/75">
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                  <span>{project.year}</span>
-                </div>
-
-                <div className="max-w-[min(100%,720px)] translate-y-0 opacity-100 transition-all duration-500 md:translate-y-8 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 md:group-focus-within:translate-y-0 md:group-focus-within:opacity-100">
-                  <p className="mb-3 text-[10px] font-black uppercase tracking-[0.28em] text-[#E37D30] md:text-xs">
-                    {project.kicker}
-                  </p>
-
-                  <h2
-                    className={`${project.titleSize} max-w-full break-words font-black uppercase leading-[0.82] text-white`}
-                  >
-                    {project.title}
-                  </h2>
-
-                  <p className="mt-4 max-w-lg text-sm leading-relaxed text-white/75">
-                    {project.description}
-                  </p>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="border border-white/25 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white/75"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.article>
+          {works.map((work, index) => (
+            <WorkCard key={work.slug} work={work} index={index} />
           ))}
         </motion.div>
       </section>

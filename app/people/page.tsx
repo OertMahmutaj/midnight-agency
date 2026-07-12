@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { pageContainer, pageRise, smoothEase } from '@/src/lib/pageMotion';
 
 const team = [
   {
@@ -22,30 +23,36 @@ export default function PeoplePage() {
   const [active, setActive] = useState(0);
 
   return (
-    // 'px-6' and 'pb-20' provide breathing room on mobile
-    <main className="min-h-screen px-6 lg:px-16 pt-32 pb-20 text-white">
-      {/* grid-cols-1 by default, lg:grid-cols-2 for wide screens */}
-      <section className="mx-auto max-w-7xl grid gap-12 lg:gap-20 lg:grid-cols-[0.8fr_1.2fr]">
-
-        {/* LEFT SIDE: Becomes 'static' on mobile */}
-        <div className="lg:sticky lg:top-32 lg:self-start">
-          <p className="text-xs font-black tracking-[0.35em] uppercase text-[#E37D30] mb-5">
+    <motion.main
+      variants={pageContainer}
+      initial="hidden"
+      animate="show"
+      className="min-h-screen px-6 lg:px-16 pt-32 pb-20 text-white"
+    >
+      <motion.section
+        variants={pageContainer}
+        className="mx-auto max-w-7xl grid gap-12 lg:gap-20 lg:grid-cols-[0.8fr_1.2fr]"
+      >
+        <motion.div variants={pageContainer} className="lg:sticky lg:top-32 lg:self-start">
+          <motion.p variants={pageRise} className="text-xs font-black tracking-[0.35em] uppercase text-[#E37D30] mb-5">
             About Us
-          </p>
+          </motion.p>
 
-          <h1 className="text-[clamp(3.5rem,10vw,9rem)] leading-[0.78] font-black uppercase">
+          <motion.h1 variants={pageRise} className="text-[clamp(3.5rem,10vw,9rem)] leading-[0.78] font-black uppercase">
             The<br />People
-          </h1>
+          </motion.h1>
 
-          <p className="mt-8 max-w-md text-white/60 leading-7 text-base lg:text-lg">
+          <motion.p variants={pageRise} className="mt-8 max-w-md text-white/60 leading-7 text-base lg:text-lg">
             Midnight Coffee is built by two founders combining engineering, 
             branding and digital strategy to create products that stand out.
-          </p>
+          </motion.p>
 
-          <div className="mt-14 space-y-6">
+          <motion.div variants={pageContainer} className="mt-14 space-y-6">
             {team.map((member, index) => (
-              <button
+              <motion.button
                 key={member.name}
+                variants={pageRise}
+                type="button"
                 onClick={() => setActive(index)}
                 className={`group flex items-center gap-5 text-left transition-all duration-300 cursor-pointer w-full ${
                   active === index ? "text-white" : "text-white/35"
@@ -56,24 +63,22 @@ export default function PeoplePage() {
                   <h3 className="font-black uppercase tracking-wide text-lg">{member.name}</h3>
                   <p className="text-[10px] uppercase tracking-[0.2em]">{member.role}</p>
                 </div>
-              </button>
+              </motion.button>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        {/* RIGHT SIDE */}
-        <div className="relative">
+        <motion.div variants={pageRise} className="relative">
           <motion.div
             key={active}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.55, ease: smoothEase }}
             className="border border-white/10 bg-black/40 backdrop-blur-md p-6 lg:p-10"
           >
             <div className="flex justify-between items-start gap-4">
               <div>
                 <span className="text-[#E37D30] text-sm font-black">0{active + 1}</span>
-                {/* Responsive text size for the name */}
                 <h2 className="mt-2 text-3xl lg:text-5xl font-black uppercase leading-none">
                   {team[active].name}
                 </h2>
@@ -82,7 +87,6 @@ export default function PeoplePage() {
                 </p>
               </div>
 
-              {/* Smaller avatar size on mobile to prevent overflow */}
               <div className="h-16 w-16 lg:h-28 lg:w-28 border border-white/10 bg-white/5 flex items-center justify-center text-xl lg:text-3xl font-black text-[#E37D30] shrink-0">
                 {team[active].name.split(' ').map(x => x[0]).join('')}
               </div>
@@ -101,9 +105,9 @@ export default function PeoplePage() {
               </div>
             </div>
           </motion.div>
-        </div>
+        </motion.div>
 
-      </section>
-    </main>
+      </motion.section>
+    </motion.main>
   );
 }

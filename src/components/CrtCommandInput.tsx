@@ -67,6 +67,13 @@ export default function CrtCommandInput({
      */
     const ctrlWasUsedWithAnotherKey = useRef(false);
 
+    const commandPointerStartRef = useRef<{
+        x: number;
+        y: number;
+    } | null>(null);
+
+    const suppressCommandClickRef = useRef(false);
+
     const [value, setValue] = useState('');
     const [focused, setFocused] = useState(false);
     const [activeIndex, setActiveIndex] = useState(0);
@@ -324,6 +331,7 @@ export default function CrtCommandInput({
     relative
     cursor-text
     overflow-hidden
+    touch-pan-y
     px-4
     py-4
     font-mono
@@ -494,6 +502,7 @@ export default function CrtCommandInput({
     mt-3
     max-h-52
     overflow-y-auto
+    touch-pan-y
     p-2
     font-mono
     text-xs
@@ -520,11 +529,45 @@ export default function CrtCommandInput({
                                     }
                                 }}
                                 onPointerDown={(event) => {
-                                    /*
-                                     * Prevent the input from blurring before
-                                     * the menu command is executed.
-                                     */
-                                    event.preventDefault();
+                                    commandPointerStartRef.current = {
+                                        x: event.clientX,
+                                        y: event.clientY,
+                                    };
+
+                                    suppressCommandClickRef.current = false;
+                                }}
+
+                                onPointerMove={(event) => {
+                                    const start = commandPointerStartRef.current;
+
+                                    if (!start) return;
+
+                                    const distance = Math.hypot(
+                                        event.clientX - start.x,
+                                        event.clientY - start.y,
+                                    );
+
+                                    if (distance > 12) {
+                                        suppressCommandClickRef.current = true;
+                                    }
+                                }}
+
+                                onPointerUp={() => {
+                                    commandPointerStartRef.current = null;
+                                }}
+
+                                onPointerCancel={() => {
+                                    commandPointerStartRef.current = null;
+                                    suppressCommandClickRef.current = true;
+                                }}
+
+                                onClick={(event) => {
+                                    if (suppressCommandClickRef.current) {
+                                        event.preventDefault();
+                                        suppressCommandClickRef.current = false;
+                                        return;
+                                    }
+
                                     executeCommand(command);
                                 }}
                                 className={`

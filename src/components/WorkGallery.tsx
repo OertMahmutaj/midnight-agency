@@ -37,6 +37,10 @@ const DRAG_SENSITIVITY = 0.005;
 const WHEEL_SENSITIVITY = 0.00165;
 const INERTIA_STRENGTH = 0.00046;
 
+const MOBILE_DRAG_SENSITIVITY = 0.01;
+const MOBILE_WHEEL_SENSITIVITY = 0.0032;
+const MOBILE_INERTIA_STRENGTH = 0.00072;
+
 const CARD_MIN_WIDTH = 148;
 const CARD_FLUID_WIDTH = 0.097;
 const CARD_MAX_WIDTH = 188;
@@ -137,6 +141,22 @@ function cubicBezier(
 
 function projectOntoPath(x: number, y: number) {
   return (-x + y) / Math.SQRT2;
+}
+
+function getCompactGestureMovement(
+  horizontal: number,
+  vertical: number,
+) {
+  /*
+   * Swipe down or swipe left:
+   * cards move right → left.
+   *
+   * Swipe up or swipe right:
+   * cards move left → right.
+   */
+  return Math.abs(vertical) >= Math.abs(horizontal)
+    ? vertical
+    : -horizontal;
 }
 
 function distributeTowardEdges(progress: number) {
@@ -517,45 +537,47 @@ function InteractiveWorkGallery() {
   const inertiaRef = useRef<{ stop: () => void } | null>(null);
 
   useEffect(() => {
-  const container = containerRef.current;
+    const container = containerRef.current;
 
-  if (!container) {
-    return;
-  }
+    if (!container) return;
 
-  function handleWheel(event: WheelEvent) {
-    event.preventDefault();
+    function handleWheel(event: WheelEvent) {
+      event.preventDefault();
 
-    inertiaRef.current?.stop();
-    inertiaRef.current = null;
+      inertiaRef.current?.stop();
+      inertiaRef.current = null;
 
-    const isCompact = stageWidth.get() < 1024;
+      const isCompact = stageWidth.get() < 1024;
 
-    const movement = isCompact
-      ? Math.abs(event.deltaY) >= Math.abs(event.deltaX)
-        ? event.deltaY
-        : -event.deltaX
-      : Math.abs(event.deltaY) >= Math.abs(event.deltaX)
-        ? event.deltaY
-        : -event.deltaX;
+      const movement = isCompact
+        ? getCompactGestureMovement(
+          event.deltaX,
+          event.deltaY,
+        )
+        : Math.abs(event.deltaY) >= Math.abs(event.deltaX)
+          ? event.deltaY
+          : -event.deltaX;
 
-    targetTravel.set(
-      targetTravel.get() +
-        movement * WHEEL_SENSITIVITY,
-    );
-  }
+      const sensitivity = isCompact
+        ? MOBILE_WHEEL_SENSITIVITY
+        : WHEEL_SENSITIVITY;
 
-  container.addEventListener('wheel', handleWheel, {
-    passive: false,
-  });
+      targetTravel.set(
+        targetTravel.get() + movement * sensitivity,
+      );
+    }
 
-  return () => {
-    container.removeEventListener(
-      'wheel',
-      handleWheel,
-    );
-  };
-}, [stageWidth, targetTravel]);
+    container.addEventListener('wheel', handleWheel, {
+      passive: false,
+    });
+
+    return () => {
+      container.removeEventListener(
+        'wheel',
+        handleWheel,
+      );
+    };
+  }, [stageWidth, targetTravel]);
 
   useEffect(() => {
     const mobileQuery = window.matchMedia('(max-width: 1023px)');
@@ -638,56 +660,80 @@ function InteractiveWorkGallery() {
   }
 
   function handlePan(info: PanInfo) {
-  const isCompact = stageWidth.get() < 1024;
+    const isCompact = stageWidth.get() < 1024;
 
-  /*
-   * Mobile:
-   * finger upward = next cards
-   * finger downward = previous cards
-   */
-  const movement = isCompact
-    ? -info.delta.y
-    : projectOntoPath(info.delta.x, info.delta.y);
+    const movement = isCompact
+      ? getCompactGestureMovement(
+        info.delta.x,
+        info.delta.y,
+      )
+      : projectOntoPath(
+        info.delta.x,
+        info.delta.y,
+      );
 
-  const passedDragThreshold = isCompact
-    ? Math.abs(info.offset.y) > 7
-    : Math.abs(info.offset.x) > 7 ||
+    const passedDragThreshold = isCompact
+      ? Math.max(
+        Math.abs(info.offset.x),
+        Math.abs(info.offset.y),
+      ) > 7
+      : Math.abs(info.offset.x) > 7 ||
       Math.abs(info.offset.y) > 7;
 
-  if (passedDragThreshold) {
-    didDragRef.current = true;
-    setHoveredPlaneIndex(null);
-  }
+    if (passedDragThreshold) {
+      didDragRef.current = true;
+      setHoveredPlaneIndex(null);
+    }
 
-  targetTravel.set(
-    targetTravel.get() +
-      movement * DRAG_SENSITIVITY,
-  );
-}
+    const sensitivity = isCompact
+      ? MOBILE_DRAG_SENSITIVITY
+      : DRAG_SENSITIVITY;
+
+    targetTravel.set(
+      targetTravel.get() + movement * sensitivity,
+    );
+  }
 
   function handlePanEnd(info: PanInfo) {
     inertiaRef.current?.stop();
 
-    const directionalVelocity =
-  stageWidth.get() < 1024
-    ? -info.velocity.y
-    : projectOntoPath(
+    const isCompact = stageWidth.get() < 1024;
+
+    const directionalVelocity = isCompact
+      ? getCompactGestureMovement(
+        info.velocity.x,
+        info.velocity.y,
+      )
+      : projectOntoPath(
         info.velocity.x,
         info.velocity.y,
       );
+
+    const inertiaStrength = isCompact
+      ? MOBILE_INERTIA_STRENGTH
+      : INERTIA_STRENGTH;
+
     const currentTravel = targetTravel.get();
+
     const projectedTravel =
-      currentTravel + directionalVelocity * INERTIA_STRENGTH;
+      currentTravel +
+      directionalVelocity * inertiaStrength;
+
     const inertiaDuration = clamp(
-      0.2 + Math.abs(projectedTravel - currentTravel) * 0.45,
+      0.2 +
+      Math.abs(projectedTravel - currentTravel) * 0.45,
       0.2,
-      0.65
+      0.65,
     );
 
-    inertiaRef.current = animate(targetTravel, projectedTravel, {
-      duration: inertiaDuration,
-      ease: [0.16, 1, 0.3, 1],
-    });
+    inertiaRef.current = animate(
+      targetTravel,
+      projectedTravel,
+      {
+        duration: inertiaDuration,
+        ease: [0.16, 1, 0.3, 1],
+      },
+    );
 
     dragResetTimeoutRef.current = setTimeout(() => {
       didDragRef.current = false;
@@ -774,7 +820,19 @@ function InteractiveWorkGallery() {
       variants={pageContainer}
       initial="hidden"
       animate="show"
-      className="relative h-[100svh] min-h-[680px] cursor-grab touch-none select-none overflow-hidden text-white active:cursor-grabbing lg:min-h-[760px]"
+      className="
+  relative
+  h-[100svh]
+  min-h-0
+  cursor-grab
+  touch-none
+  select-none
+  overflow-hidden
+  overscroll-none
+  text-white
+  active:cursor-grabbing
+  lg:min-h-[760px]
+"
     >
       <motion.header
         variants={pageRise}

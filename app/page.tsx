@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
+import { useEffect } from 'react';
+
 import MidnightButton from '@/src/components/MidnightButton';
 import WordScrambleText from '@/src/components/WordScrambleText';
 import CrtCommandInput from '@/src/components/CrtCommandInput';
@@ -12,22 +14,45 @@ import {
 } from '@/src/lib/pageMotion';
 
 export default function HomePage() {
+
+  useEffect(() => {
+    const previousScrollRestoration =
+      window.history.scrollRestoration;
+
+    window.history.scrollRestoration = 'manual';
+
+    const frame = window.requestAnimationFrame(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'auto',
+      });
+
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.history.scrollRestoration =
+        previousScrollRestoration;
+    };
+  }, []);
   return (
     <motion.main
       variants={pageContainer}
       initial="hidden"
       animate="show"
       className="
-        relative
-        isolate
-        flex
-        min-h-[calc(100svh_-_6rem)]
-        overflow-x-hidden
-        bg-[#020708]
-
-        sm:min-h-[calc(100svh_-_7rem)]
-        md:min-h-[calc(100svh_-_6rem)]
-      "
+    relative
+    isolate
+    min-h-[100svh]
+    overflow-x-hidden
+    bg-[#020708]
+    pt-24
+    sm:pt-28
+    md:pt-24
+  "
     >
       {/* Background and CRT interaction layer */}
       <div className="absolute inset-0 z-0 overflow-hidden">

@@ -25,27 +25,32 @@
     min-width: 320px;
     min-height: 100%;
     overflow-x: hidden;
-    overscroll-behavior-y: none;
 
-    /*
-      When mobile Chrome pulls beyond the footer,
-      this is the background that becomes visible.
-    */
-    background: var(--footer-background);
+    /* Footer color when Chrome overscrolls past the document */
+    background: #eeeeee;
+
+    /* Prevent Chrome from adjusting scroll during layout changes */
+    overflow-anchor: none;
 
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
 
   body {
-    min-width: 320px;
-    min-height: 100dvh;
-    margin: 0;
-    overflow-x: hidden;
-    overscroll-behavior-y: none;
+    position: relative;
 
-    background: var(--background);
-    color: var(--foreground);
+    min-width: 320px;
+    min-height: 100%;
+    margin: 0;
+
+    /*
+      Do not set overflow-y:auto here.
+      Let the browser use its normal document scrolling.
+    */
+    overflow-x: hidden;
+
+    background: #000000;
+    color: #ffffff;
 
     font-family: Arial, Helvetica, sans-serif;
     text-rendering: optimizeLegibility;
@@ -72,23 +77,12 @@
     font: inherit;
   }
 
-  button,
-  a {
-    -webkit-tap-highlight-color: transparent;
-  }
-
   img,
   svg,
   canvas,
   video {
     display: block;
     max-width: 100%;
-  }
-
-  input,
-  textarea,
-  select {
-    border-radius: 0;
   }
 
   *::-webkit-scrollbar,

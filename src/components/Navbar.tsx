@@ -28,28 +28,30 @@ const mobileNavLinks = [{ label: 'Home', href: '/' }, ...navLinks];
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    if (!isOpen) return;
+ useEffect(() => {
+  function closeOnEscape(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      setIsOpen(false);
+    }
+  }
 
-    const previousOverflow = document.body.style.overflow;
+  if (isOpen) {
     document.body.style.overflow = 'hidden';
-
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setIsOpen(false);
-    };
-
     window.addEventListener('keydown', closeOnEscape);
+  } else {
+    document.body.style.overflow = '';
+  }
 
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', closeOnEscape);
-    };
-  }, [isOpen]);
+  return () => {
+    document.body.style.overflow = '';
+    window.removeEventListener('keydown', closeOnEscape);
+  };
+}, [isOpen]);
 
   return (
     <nav
   className="
-    sticky
+    fixed
     left-0
     top-0
     z-[150]

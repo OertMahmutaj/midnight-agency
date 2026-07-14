@@ -47,8 +47,31 @@ export default function Navbar() {
   }, [isOpen]);
 
   return (
-    <nav className="fixed left-0 top-0 z-[150] w-full border-b border-white/10 bg-black/30 px-5 py-4 shadow-lg backdrop-blur-md sm:px-8 sm:py-6 lg:px-10">
-      <div className="mx-auto flex max-w-7xl items-center justify-between">
+    <nav
+  className="
+    sticky
+    left-0
+    top-0
+    z-[150]
+    h-24
+    w-full
+    shrink-0
+    border-b
+    border-white/10
+    bg-black/60
+    px-5
+    shadow-lg
+    backdrop-blur-md
+
+    sm:h-28
+    sm:px-8
+
+    md:h-24
+
+    lg:px-10
+  "
+>
+      <div className="mx-auto flex h-full max-w-7xl items-center justify-between">
         <Link
           href="/"
           aria-label="Midnight home"
@@ -86,21 +109,21 @@ export default function Navbar() {
                 animate={
                   isOpen
                     ? {
-                        x: [dot.closedX, dot.closedX, dot.openX],
-                        y: [dot.closedY, dot.closedY, dot.openY],
-                        rotate: [0, dot.rotate, dot.rotate],
-                        width: [7, 22, 16],
-                        height: [7, 4, 4],
-                        borderRadius: [999, 999, 999],
-                      }
+                      x: [dot.closedX, dot.closedX, dot.openX],
+                      y: [dot.closedY, dot.closedY, dot.openY],
+                      rotate: [0, dot.rotate, dot.rotate],
+                      width: [7, 22, 16],
+                      height: [7, 4, 4],
+                      borderRadius: [999, 999, 999],
+                    }
                     : {
-                        x: [dot.openX, dot.closedX, dot.closedX],
-                        y: [dot.openY, dot.closedY, dot.closedY],
-                        rotate: [dot.rotate, dot.rotate, 0],
-                        width: [16, 22, 7],
-                        height: [4, 4, 7],
-                        borderRadius: [999, 999, 999],
-                      }
+                      x: [dot.openX, dot.closedX, dot.closedX],
+                      y: [dot.openY, dot.closedY, dot.closedY],
+                      rotate: [dot.rotate, dot.rotate, 0],
+                      width: [16, 22, 7],
+                      height: [4, 4, 7],
+                      borderRadius: [999, 999, 999],
+                    }
                 }
                 transition={{
                   duration: 0.42,

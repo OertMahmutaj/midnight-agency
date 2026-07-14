@@ -11,6 +11,7 @@
 :root {
   --background: #000000;
   --foreground: #ffffff;
+  --footer-background: #eeeeee;
 }
 
 @layer base {
@@ -23,27 +24,44 @@
   html {
     min-width: 320px;
     min-height: 100%;
-    background: var(--background);
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+
+    /*
+      When mobile Chrome pulls beyond the footer,
+      this is the background that becomes visible.
+    */
+    background: var(--footer-background);
+
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
 
   body {
     min-width: 320px;
-    min-height: 100%;
+    min-height: 100dvh;
     margin: 0;
-    overflow-x: clip;
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+
     background: var(--background);
     color: var(--foreground);
+
     font-family: Arial, Helvetica, sans-serif;
     text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1,
   h2,
   h3,
   .font-k2d {
-    font-family: "K2D ExtraBold", Arial, Helvetica, sans-serif;
+    font-family:
+      "K2D ExtraBold",
+      Arial,
+      Helvetica,
+      sans-serif;
   }
 
   button,
@@ -54,12 +72,23 @@
     font: inherit;
   }
 
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
   img,
   svg,
   canvas,
   video {
     display: block;
     max-width: 100%;
+  }
+
+  input,
+  textarea,
+  select {
+    border-radius: 0;
   }
 
   *::-webkit-scrollbar,
@@ -71,57 +100,117 @@
   }
 }
 
+/*
+  Disable the fixed full-screen grain layer.
+
+  A position: fixed texture covering the viewport can cause
+  Chrome mobile compositing artifacts while pulling the footer.
+*/
+.grain-fixed {
+  display: none;
+}
+
+/*
+  Use this class around dark page content later if you still
+  want the grain effect without using a fixed viewport layer.
+*/
+.dark-site-content {
+  position: relative;
+  isolation: isolate;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.dark-site-content::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background-image: url("/images.jpg");
+  background-repeat: repeat;
+  opacity: 0.09;
+
+  content: "";
+}
+
+/* 3D services slider */
+
 .slider {
   position: relative;
+
   width: 175px;
   height: 175px;
-  transform-style: preserve-3d;
-  animation: autoRun 40s linear infinite;
+
   transform-origin: 87.5px 87.5px;
+  transform-style: preserve-3d;
+
+  animation: autoRun 40s linear infinite;
 }
 
 .item {
   position: absolute;
   inset: 0;
+
   display: flex;
   width: 175px;
   height: 175px;
   align-items: center;
   justify-content: center;
+
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: #080808;
   color: #ffffff;
+
   backface-visibility: hidden;
-  transform: rotateY(calc((var(--position) - 1) * 60deg)) translateZ(150px);
+
+  transform:
+    rotateY(calc((var(--position) - 1) * 60deg))
+    translateZ(150px);
 }
+
+/* Bold text interaction */
 
 .bold-link {
   display: inline-block;
   min-width: 4ch;
+
   text-align: center;
+
   transition: transform 0.5s ease;
 }
 
 .bold-link::after {
   display: block;
-  content: "bold.";
+
   font-weight: inherit;
+
+  content: "bold.";
+
   transition: all 0.5s ease;
 }
 
 .bold-link:hover::after {
-  content: "BOLD.";
   letter-spacing: 0.02em;
+
+  content: "BOLD.";
 }
 
-.grain-fixed {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: url("/images.jpg");
-  opacity: 0.09;
+/* CRT terminal cursor */
+
+@keyframes crt-cursor {
+  0%,
+  45% {
+    opacity: 1;
+  }
+
+  46%,
+  100% {
+    opacity: 0;
+  }
 }
+
+/* Rotating 3D slider */
 
 @keyframes autoRun {
   from {
@@ -133,6 +222,8 @@
   }
 }
 
+/* Accessibility */
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -141,17 +232,5 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-}
-
-@keyframes crt-cursor {
-  0%,
-  45% {
-    opacity: 1;
-  }
-
-  46%,
-  100% {
-    opacity: 0;
   }
 }

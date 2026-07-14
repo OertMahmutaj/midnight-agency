@@ -19,31 +19,18 @@ export default function HomePage() {
       animate="show"
       className="
         relative
+        isolate
         flex
-        min-h-[100svh]
-        items-start
-        overflow-hidden
+        min-h-[calc(100svh_-_6rem)]
+        overflow-x-hidden
         bg-[#020708]
-        px-5
-        pb-16
-        pt-48
-        sm:items-center
-        sm:px-8
-        sm:pb-20
-        sm:pt-32
-        md:px-10
-        lg:px-16
+
+        sm:min-h-[calc(100svh_-_7rem)]
+        md:min-h-[calc(100svh_-_6rem)]
       "
     >
       {/* Background and CRT interaction layer */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        {/*
-          This wrapper always preserves the exact image ratio.
-
-          On wider screens it fills the viewport width.
-          On taller screens it fills the viewport height.
-          It is anchored right so the computer remains visible.
-        */}
         <div
           className="
             absolute
@@ -63,7 +50,7 @@ export default function HomePage() {
             className="pointer-events-none object-fill"
           />
 
-          {/* Desktop terminal mapped directly to the CRT glass */}
+          {/* Desktop CRT terminal */}
           <div
             className="
               absolute
@@ -80,25 +67,48 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Text-readability overlay */}
+      {/* Text readability overlay */}
       <div
         className="
           pointer-events-none
           absolute
           inset-0
           z-[1]
-          bg-[linear-gradient(90deg,rgba(0,0,0,0.82)_0%,rgba(0,0,0,0.58)_38%,rgba(0,0,0,0.08)_70%)]
+          bg-[linear-gradient(90deg,rgba(0,0,0,0.88)_0%,rgba(0,0,0,0.62)_38%,rgba(0,0,0,0.08)_72%)]
         "
       />
 
-      {/* Main content */}
+      {/* Hero content */}
       <motion.div
         variants={pageContainer}
-        className="relative z-10 mx-auto w-full max-w-7xl"
+        className="
+          relative
+          z-10
+          mx-auto
+          flex
+          w-full
+          max-w-7xl
+          flex-1
+          items-start
+          px-5
+          pb-14
+          pt-16
+
+          sm:px-8
+          sm:pb-20
+          sm:pt-20
+
+          md:px-10
+
+          min-[1100px]:items-center
+          min-[1100px]:py-12
+
+          lg:px-16
+        "
       >
         <motion.div
           variants={pageContainer}
-          className="max-w-5xl"
+          className="w-full max-w-5xl"
         >
           <motion.h1
             variants={pageRise}
@@ -128,14 +138,23 @@ export default function HomePage() {
 
           <motion.div
             variants={pageRise}
-            className="mt-8 w-full max-w-[19rem] overflow-visible px-2 py-2 sm:mt-10 sm:px-0"
+            className="
+              mt-8
+              w-full
+              max-w-[19rem]
+              overflow-visible
+              px-2
+              py-2
+              sm:mt-10
+              sm:px-0
+            "
           >
             <MidnightButton href="/work">
               View Our Work
             </MidnightButton>
           </motion.div>
 
-          {/* Mobile/tablet terminal fallback */}
+          {/* Mobile/tablet terminal */}
           <motion.div
             variants={pageRise}
             className="mt-8 min-[1100px]:hidden"

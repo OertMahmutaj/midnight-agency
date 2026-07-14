@@ -87,7 +87,7 @@ export default function ServicesPage() {
             <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 7.8], fov: 45 }}>
               <ambientLight intensity={0.55} />
               <directionalLight position={[10, 10, 5]} intensity={1.15} />
-              <Environment preset="city" />
+              <Environment files="/hdr/potsdamer_platz_1k.hdr" />
               <ServiceCube />
               <OrbitControls enableZoom={false} enablePan={false} />
             </Canvas>

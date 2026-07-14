@@ -94,7 +94,7 @@ export default function ContactPage() {
               <directionalLight position={[6, 6, 5]} intensity={1.2} />
               <Suspense fallback={null}>
                 <ContactCube />
-                <Environment preset="city" />
+                <Environment files="/hdr/potsdamer_platz_1k.hdr" />
                 <OrbitControls enableZoom={false} enablePan={false} />
               </Suspense>
             </Canvas>

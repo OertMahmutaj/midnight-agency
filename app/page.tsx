@@ -1,9 +1,15 @@
 'use client';
 
+import Image from 'next/image';
 import { motion } from 'framer-motion';
+
 import MidnightButton from '@/src/components/MidnightButton';
 import WordScrambleText from '@/src/components/WordScrambleText';
-import { pageContainer, pageRise } from '@/src/lib/pageMotion';
+import CrtCommandInput from '@/src/components/CrtCommandInput';
+import {
+  pageContainer,
+  pageRise,
+} from '@/src/lib/pageMotion';
 
 export default function HomePage() {
   return (
@@ -11,13 +17,100 @@ export default function HomePage() {
       variants={pageContainer}
       initial="hidden"
       animate="show"
-      className="flex min-h-[72svh] items-start overflow-x-clip px-5 pb-16 pt-48 sm:min-h-[100svh] sm:items-center sm:px-8 sm:pb-20 sm:pt-32 md:px-10 lg:px-16"
+      className="
+        relative
+        flex
+        min-h-[100svh]
+        items-start
+        overflow-hidden
+        bg-[#020708]
+        px-5
+        pb-16
+        pt-48
+        sm:items-center
+        sm:px-8
+        sm:pb-20
+        sm:pt-32
+        md:px-10
+        lg:px-16
+      "
     >
-      <motion.div variants={pageContainer} className="mx-auto w-full max-w-7xl">
-        <motion.div variants={pageContainer} className="max-w-5xl">
+      {/* Background and CRT interaction layer */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {/*
+          This wrapper always preserves the exact image ratio.
+
+          On wider screens it fills the viewport width.
+          On taller screens it fills the viewport height.
+          It is anchored right so the computer remains visible.
+        */}
+        <div
+          className="
+            absolute
+            right-0
+            top-1/2
+            aspect-[1672/941]
+            h-[max(100%,56.28vw)]
+            -translate-y-1/2
+          "
+        >
+          <Image
+            src="/images/midnight-hero.png"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="pointer-events-none object-fill"
+          />
+
+          {/* Desktop terminal mapped directly to the CRT glass */}
+          <div
+            className="
+              absolute
+              left-[69.7%]
+              top-[28.2%]
+              hidden
+              h-[21.3%]
+              w-[16.1%]
+              min-[1100px]:block
+            "
+          >
+            <CrtCommandInput variant="screen" />
+          </div>
+        </div>
+      </div>
+
+      {/* Text-readability overlay */}
+      <div
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          z-[1]
+          bg-[linear-gradient(90deg,rgba(0,0,0,0.82)_0%,rgba(0,0,0,0.58)_38%,rgba(0,0,0,0.08)_70%)]
+        "
+      />
+
+      {/* Main content */}
+      <motion.div
+        variants={pageContainer}
+        className="relative z-10 mx-auto w-full max-w-7xl"
+      >
+        <motion.div
+          variants={pageContainer}
+          className="max-w-5xl"
+        >
           <motion.h1
             variants={pageRise}
-            className="max-w-[15ch] text-[clamp(2.75rem,12vw,8rem)] font-black uppercase leading-[0.88] tracking-[-0.045em] sm:leading-[0.86]"
+            className="
+              max-w-[15ch]
+              text-[clamp(2.75rem,12vw,8rem)]
+              font-black
+              uppercase
+              leading-[0.88]
+              tracking-[-0.045em]
+              sm:leading-[0.86]
+            "
           >
             The road to{' '}
             <WordScrambleText
@@ -37,7 +130,17 @@ export default function HomePage() {
             variants={pageRise}
             className="mt-8 w-full max-w-[19rem] overflow-visible px-2 py-2 sm:mt-10 sm:px-0"
           >
-            <MidnightButton href="/work">View Our Work</MidnightButton>
+            <MidnightButton href="/work">
+              View Our Work
+            </MidnightButton>
+          </motion.div>
+
+          {/* Mobile/tablet terminal fallback */}
+          <motion.div
+            variants={pageRise}
+            className="mt-8 min-[1100px]:hidden"
+          >
+            <CrtCommandInput variant="mobile" />
           </motion.div>
         </motion.div>
       </motion.div>

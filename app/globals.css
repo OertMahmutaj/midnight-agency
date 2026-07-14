@@ -143,3 +143,15 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+@keyframes crt-cursor {
+  0%,
+  45% {
+    opacity: 1;
+  }
+
+  46%,
+  100% {
+    opacity: 0;
+  }
+}

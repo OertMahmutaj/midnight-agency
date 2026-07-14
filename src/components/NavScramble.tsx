@@ -20,7 +20,7 @@ export default function NavScramble({
   className = '',
   chars = DEFAULT_CHARS,
   frames = 90,
-  scrambleEvery = 10,
+  scrambleEvery = 6,
 }: NavScrambleProps) {
   const [text, setText] = useState(value);
   const animationFrameRef = useRef<number | null>(null);

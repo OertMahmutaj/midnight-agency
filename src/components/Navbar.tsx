@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import NavScramble from '@/src/components/NavScramble';
+// import NavScramble from '@/src/components/NavScramble';
+import WordScrambleText from '@/src/components/WordScrambleText';
 
 const menuDots = [
   { closedX: -9, closedY: -9, openX: -4.5, openY: -4.5, rotate: 45 },
@@ -46,7 +47,7 @@ export default function Navbar() {
   }, [isOpen]);
 
   return (
-    <nav className="fixed left-0 top-0 z-[150] w-full px-5 py-4 sm:px-8 sm:py-6 lg:px-10">
+    <nav className="fixed left-0 top-0 z-[150] w-full border-b border-white/10 bg-black/30 px-5 py-4 shadow-lg backdrop-blur-md sm:px-8 sm:py-6 lg:px-10">
       <div className="mx-auto flex max-w-7xl items-center justify-between">
         <Link
           href="/"
@@ -123,10 +124,10 @@ export default function Navbar() {
               aria-label={label}
               className="inline-flex cursor-pointer transition-colors hover:text-[#E37D30]"
             >
-              <NavScramble
+              <WordScrambleText
                 value={label}
                 hoverValue={label.toUpperCase()}
-                frames={90}
+                // frames={30}
                 className="inline-grid whitespace-nowrap"
               />
             </Link>

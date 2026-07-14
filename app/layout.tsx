@@ -4,6 +4,7 @@ import Navbar from '@/src/components/Navbar';
 import Footer from '@/src/components/Footer';
 import MidnightCurtain from '@/src/components/MidnightCurtain';
 import ScrollToTopButton from '@/src/components/ScrollToTopButton';
+import ContactModal from '@/src/components/ContactModal';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const introSeen = (await cookies()).has('midnight_intro_seen');
@@ -18,6 +19,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Navbar />
           {children}
           <Footer />
+          <ContactModal showTrigger={false} />
         </div>
         <ScrollToTopButton />
       </body>

@@ -35,7 +35,7 @@ const columns = [
 
 export default function Footer() {
   return (
-    <footer className="mt-16 flex flex-col border-t border-black/10 bg-[#eeeeee] text-[#111111] sm:mt-24">
+    <footer className="flex flex-col border-t border-black/10 bg-[#eeeeee] text-[#111111]">
       <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8 sm:py-16 md:px-10 lg:px-16 lg:py-20">
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {columns.map((column) => (

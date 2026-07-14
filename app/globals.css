@@ -228,3 +228,41 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+.hamburger-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 5.5;
+  stroke-linecap: round;
+
+  transition:
+    stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
+    stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hamburger-line-top,
+.hamburger-line-bottom {
+  stroke-dasharray: 60 207;
+}
+
+.hamburger-line-middle {
+  stroke-dasharray: 60 60;
+}
+
+.hamburger-open .hamburger-line-top,
+.hamburger-open .hamburger-line-bottom {
+  stroke-dasharray: 90 207;
+  stroke-dashoffset: -134;
+}
+
+.hamburger-open .hamburger-line-middle {
+  stroke-dasharray: 1 60;
+  stroke-dashoffset: -30;
+}
+
+html.work-page-scroll-locked,
+html.work-page-scroll-locked body {
+  height: 100%;
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}

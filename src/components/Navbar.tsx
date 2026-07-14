@@ -7,13 +7,6 @@ import Link from 'next/link';
 // import NavScramble from '@/src/components/NavScramble';
 import WordScrambleText from '@/src/components/WordScrambleText';
 
-const menuDots = [
-  { closedX: -9, closedY: -9, openX: -4.5, openY: -4.5, rotate: 45 },
-  { closedX: 9, closedY: -9, openX: 4.5, openY: -4.5, rotate: -45 },
-  { closedX: -9, closedY: 9, openX: -4.5, openY: 4.5, rotate: -45 },
-  { closedX: 9, closedY: 9, openX: 4.5, openY: 4.5, rotate: 45 },
-];
-
 const menuEase = [0.76, 0, 0.24, 1] as const;
 
 const navLinks = [
@@ -28,29 +21,29 @@ const mobileNavLinks = [{ label: 'Home', href: '/' }, ...navLinks];
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
- useEffect(() => {
-  function closeOnEscape(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
-      setIsOpen(false);
+  useEffect(() => {
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
     }
-  }
 
-  if (isOpen) {
-    document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', closeOnEscape);
-  } else {
-    document.body.style.overflow = '';
-  }
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', closeOnEscape);
+    } else {
+      document.body.style.overflow = '';
+    }
 
-  return () => {
-    document.body.style.overflow = '';
-    window.removeEventListener('keydown', closeOnEscape);
-  };
-}, [isOpen]);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [isOpen]);
 
   return (
     <nav
-  className="
+      className="
     fixed
     left-0
     top-0
@@ -72,7 +65,7 @@ export default function Navbar() {
 
     lg:px-10
   "
->
+    >
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between">
         <Link
           href="/"
@@ -96,49 +89,58 @@ export default function Navbar() {
           aria-expanded={isOpen}
           aria-controls="mobile-navigation"
           onClick={() => setIsOpen((current) => !current)}
-          className="relative z-[202] -mr-2 grid h-16 w-16 cursor-pointer place-items-center md:hidden"
+          className="
+    relative
+    z-[202]
+    -mr-2
+    grid
+    h-16
+    w-16
+    cursor-pointer
+    place-items-center
+    md:hidden
+  "
         >
-          <motion.span
-            className="relative block h-14 w-14"
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.94 }}
+          <svg
+            viewBox="0 0 100 100"
+            aria-hidden="true"
+            className={`
+      h-12
+      w-12
+      transition-transform
+      duration-300
+      ${isOpen ? 'hamburger-open' : ''}
+    `}
           >
-            {menuDots.map((dot, index) => (
-              <motion.span
-                key={index}
-                className="absolute left-1/2 top-1/2 block bg-white"
-                initial={false}
-                animate={
-                  isOpen
-                    ? {
-                      x: [dot.closedX, dot.closedX, dot.openX],
-                      y: [dot.closedY, dot.closedY, dot.openY],
-                      rotate: [0, dot.rotate, dot.rotate],
-                      width: [7, 22, 16],
-                      height: [7, 4, 4],
-                      borderRadius: [999, 999, 999],
-                    }
-                    : {
-                      x: [dot.openX, dot.closedX, dot.closedX],
-                      y: [dot.openY, dot.closedY, dot.closedY],
-                      rotate: [dot.rotate, dot.rotate, 0],
-                      width: [16, 22, 7],
-                      height: [4, 4, 7],
-                      borderRadius: [999, 999, 999],
-                    }
-                }
-                transition={{
-                  duration: 0.42,
-                  times: [0, 0.52, 1],
-                  ease: menuEase,
-                }}
-                style={{
-                  translateX: '-50%',
-                  translateY: '-50%',
-                }}
-              />
-            ))}
-          </motion.span>
+            <path
+              className="hamburger-line hamburger-line-top"
+              d="
+        M 20,29
+        H 80
+        C 80,29 94.5,28.8 94.5,66.7
+        C 94.5,78.8 90.5,81.7 85.5,81.7
+        C 79.5,81.7 75,75 75,75
+        L 25,25
+      "
+            />
+
+            <path
+              className="hamburger-line hamburger-line-middle"
+              d="M 20,50 H 80"
+            />
+
+            <path
+              className="hamburger-line hamburger-line-bottom"
+              d="
+        M 20,71
+        H 80
+        C 80,71 94.5,71.2 94.5,33.3
+        C 94.5,21.2 90.5,18.3 85.5,18.3
+        C 79.5,18.3 75,25 75,25
+        L 25,75
+      "
+            />
+          </svg>
         </button>
 
         <div className="hidden items-center gap-6 text-sm font-bold uppercase tracking-widest md:flex lg:gap-8">

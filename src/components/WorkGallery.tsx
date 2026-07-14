@@ -27,6 +27,7 @@ import PageNumber from '@/src/components/PageNumber';
 import { works, type WorkItem } from '@/src/data/works';
 import { pageContainer, pageRise } from '@/src/lib/pageMotion';
 
+
 const NAVBAR_HEIGHT = 96;
 // Higher values place more cards on the same curve, making the stack tighter.
 const VISIBLE_PLANE_COUNT = 18;
@@ -84,9 +85,8 @@ function SelectedWorkIntro({ compact = false }: { compact?: boolean }) {
       </p>
 
       <div
-        className={`flex flex-wrap gap-x-6 gap-y-2 border-t border-white/14 font-mono text-[9px] uppercase tracking-[0.18em] text-white/38 ${
-          compact ? 'mt-4 pt-3' : 'mt-8 pt-4'
-        }`}
+        className={`flex flex-wrap gap-x-6 gap-y-2 border-t border-white/14 font-mono text-[9px] uppercase tracking-[0.18em] text-white/38 ${compact ? 'mt-4 pt-3' : 'mt-8 pt-4'
+          }`}
       >
         <span>Strategy</span>
         <span>Identity</span>
@@ -97,7 +97,7 @@ function SelectedWorkIntro({ compact = false }: { compact?: boolean }) {
 }
 
 function subscribeToHydration() {
-  return () => {};
+  return () => { };
 }
 
 function getClientHydrationSnapshot() {
@@ -278,7 +278,7 @@ function Plane({
 
   const pointerEvents = useTransform([phase, stageWidth], ([latestPhase, width]) =>
     Number(latestPhase) > 0.08 &&
-    Number(latestPhase) < getPathSpan(Number(width)) - 0.08
+      Number(latestPhase) < getPathSpan(Number(width)) - 0.08
       ? 'auto'
       : 'none'
   );
@@ -324,8 +324,8 @@ function Plane({
     ([latestY, latestHoverY, latestHeight]) =>
       Math.round(
         Number(latestY) +
-          Number(latestHoverY) +
-          Number(latestHeight) * 0.08
+        Number(latestHoverY) +
+        Number(latestHeight) * 0.08
       )
   );
 
@@ -486,9 +486,9 @@ function InteractiveWorkGallery() {
     works.length === 0
       ? []
       : Array.from(
-          { length: Math.max(VISIBLE_PLANE_COUNT, works.length) },
-          (_, index) => works[index % works.length]
-        );
+        { length: Math.max(VISIBLE_PLANE_COUNT, works.length) },
+        (_, index) => works[index % works.length]
+      );
 
   const initialStageWidth = Math.max(
     1,
@@ -517,32 +517,70 @@ function InteractiveWorkGallery() {
   const inertiaRef = useRef<{ stop: () => void } | null>(null);
 
   useEffect(() => {
-    const container = containerRef.current;
+  const container = containerRef.current;
 
-    if (!container) {
-      return;
-    }
+  if (!container) {
+    return;
+  }
 
-    function measure() {
-      const currentContainer = containerRef.current;
+  function handleWheel(event: WheelEvent) {
+    event.preventDefault();
 
-      if (!currentContainer) {
-        return;
-      }
+    inertiaRef.current?.stop();
+    inertiaRef.current = null;
 
-      stageWidth.set(currentContainer.clientWidth);
-      stageHeight.set(
-        Math.max(1, currentContainer.clientHeight - NAVBAR_HEIGHT)
+    const isCompact = stageWidth.get() < 1024;
+
+    const movement = isCompact
+      ? Math.abs(event.deltaY) >= Math.abs(event.deltaX)
+        ? event.deltaY
+        : -event.deltaX
+      : Math.abs(event.deltaY) >= Math.abs(event.deltaX)
+        ? event.deltaY
+        : -event.deltaX;
+
+    targetTravel.set(
+      targetTravel.get() +
+        movement * WHEEL_SENSITIVITY,
+    );
+  }
+
+  container.addEventListener('wheel', handleWheel, {
+    passive: false,
+  });
+
+  return () => {
+    container.removeEventListener(
+      'wheel',
+      handleWheel,
+    );
+  };
+}, [stageWidth, targetTravel]);
+
+  useEffect(() => {
+    const mobileQuery = window.matchMedia('(max-width: 1023px)');
+    const root = document.documentElement;
+
+    function updateScrollLock() {
+      root.classList.toggle(
+        'work-page-scroll-locked',
+        mobileQuery.matches,
       );
     }
 
-    measure();
+    updateScrollLock();
 
-    const resizeObserver = new ResizeObserver(measure);
-    resizeObserver.observe(container);
+    mobileQuery.addEventListener('change', updateScrollLock);
 
-    return () => resizeObserver.disconnect();
-  }, [stageHeight, stageWidth]);
+    return () => {
+      mobileQuery.removeEventListener(
+        'change',
+        updateScrollLock,
+      );
+
+      root.classList.remove('work-page-scroll-locked');
+    };
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -600,28 +638,43 @@ function InteractiveWorkGallery() {
   }
 
   function handlePan(info: PanInfo) {
-    const isCompact = stageWidth.get() < 1024;
-    const movement = isCompact
-      ? -info.delta.x
-      : projectOntoPath(info.delta.x, info.delta.y);
-    const passedDragThreshold = isCompact
-      ? Math.abs(info.offset.x) > 7
-      : Math.abs(info.offset.x) > 7 || Math.abs(info.offset.y) > 7;
+  const isCompact = stageWidth.get() < 1024;
 
-    if (passedDragThreshold) {
-      didDragRef.current = true;
-      setHoveredPlaneIndex(null);
-    }
+  /*
+   * Mobile:
+   * finger upward = next cards
+   * finger downward = previous cards
+   */
+  const movement = isCompact
+    ? -info.delta.y
+    : projectOntoPath(info.delta.x, info.delta.y);
 
-    targetTravel.set(targetTravel.get() + movement * DRAG_SENSITIVITY);
+  const passedDragThreshold = isCompact
+    ? Math.abs(info.offset.y) > 7
+    : Math.abs(info.offset.x) > 7 ||
+      Math.abs(info.offset.y) > 7;
+
+  if (passedDragThreshold) {
+    didDragRef.current = true;
+    setHoveredPlaneIndex(null);
   }
+
+  targetTravel.set(
+    targetTravel.get() +
+      movement * DRAG_SENSITIVITY,
+  );
+}
 
   function handlePanEnd(info: PanInfo) {
     inertiaRef.current?.stop();
 
-    const directionalVelocity = stageWidth.get() < 1024
-      ? -info.velocity.x
-      : projectOntoPath(info.velocity.x, info.velocity.y);
+    const directionalVelocity =
+  stageWidth.get() < 1024
+    ? -info.velocity.y
+    : projectOntoPath(
+        info.velocity.x,
+        info.velocity.y,
+      );
     const currentTravel = targetTravel.get();
     const projectedTravel =
       currentTravel + directionalVelocity * INERTIA_STRENGTH;
@@ -710,76 +763,76 @@ function InteractiveWorkGallery() {
   }
 
   return (
-      <motion.section
-        ref={containerRef}
-        onPanStart={handlePanStart}
-        onPan={(_, info) => handlePan(info)}
-        onPanEnd={(_, info) => handlePanEnd(info)}
-        onPointerMove={handleStagePointerMove}
-        onPointerUp={handleStagePointerUp}
-        onPointerLeave={() => setHoveredPlaneIndex(null)}
-        variants={pageContainer}
-        initial="hidden"
-        animate="show"
-        className="relative h-[100svh] min-h-[680px] cursor-grab touch-pan-y select-none overflow-hidden text-white active:cursor-grabbing lg:min-h-[760px] lg:touch-none"
+    <motion.section
+      ref={containerRef}
+      onPanStart={handlePanStart}
+      onPan={(_, info) => handlePan(info)}
+      onPanEnd={(_, info) => handlePanEnd(info)}
+      onPointerMove={handleStagePointerMove}
+      onPointerUp={handleStagePointerUp}
+      onPointerLeave={() => setHoveredPlaneIndex(null)}
+      variants={pageContainer}
+      initial="hidden"
+      animate="show"
+      className="relative h-[100svh] min-h-[680px] cursor-grab touch-none select-none overflow-hidden text-white active:cursor-grabbing lg:min-h-[760px]"
+    >
+      <motion.header
+        variants={pageRise}
+        className="pointer-events-none absolute left-5 right-5 top-28 z-[2] sm:left-8 sm:right-8 sm:top-32 md:left-10 md:right-10 lg:left-[5%] lg:right-auto lg:top-[161px] lg:w-[min(44vw,680px)]"
       >
-        <motion.header
-          variants={pageRise}
-          className="pointer-events-none absolute left-5 right-5 top-28 z-[2] sm:left-8 sm:right-8 sm:top-32 md:left-10 md:right-10 lg:left-[5%] lg:right-auto lg:top-[161px] lg:w-[min(44vw,680px)]"
-        >
-          <h1 className="max-w-[11ch] text-5xl font-medium uppercase leading-[0.86] tracking-normal text-white sm:text-6xl md:text-7xl lg:max-w-none lg:text-[clamp(3.6rem,5vw,6rem)] lg:leading-[0.83]">
-            <span className="block">Bold Builds</span>
+        <h1 className="max-w-[11ch] text-5xl font-medium uppercase leading-[0.86] tracking-normal text-white sm:text-6xl md:text-7xl lg:max-w-none lg:text-[clamp(3.6rem,5vw,6rem)] lg:leading-[0.83]">
+          <span className="block">Bold Builds</span>
 
-            <span className="block">
-              Brands.
-              <PageNumber value="02" className="translate-y-2" />
-            </span>
-          </h1>
+          <span className="block">
+            Brands.
+            <PageNumber value="02" className="translate-y-2" />
+          </span>
+        </h1>
 
-          <div className="mt-6 max-w-sm lg:hidden">
-            <SelectedWorkIntro compact />
-          </div>
-        </motion.header>
+        <div className="mt-6 max-w-sm lg:hidden">
+          <SelectedWorkIntro compact />
+        </div>
+      </motion.header>
 
-        <motion.aside
-          variants={pageRise}
-          className="pointer-events-none absolute left-[5%] z-[2] hidden w-[min(32vw,420px)] lg:block"
-          style={{ top: NAVBAR_HEIGHT + 350 }}
-        >
-          <SelectedWorkIntro />
-        </motion.aside>
+      <motion.aside
+        variants={pageRise}
+        className="pointer-events-none absolute left-[5%] z-[2] hidden w-[min(32vw,420px)] lg:block"
+        style={{ top: NAVBAR_HEIGHT + 350 }}
+      >
+        <SelectedWorkIntro />
+      </motion.aside>
 
-        <motion.div
-          variants={pageRise}
-          className="absolute inset-x-0 bottom-0 z-10 overflow-hidden"
-          style={{
-            top: NAVBAR_HEIGHT,
-            isolation: 'isolate',
-          }}
-        >
-          <div className="absolute inset-0">
-            {galleryItems.map((work, index) => (
-              <Plane
-                key={`${work.slug}-${index}`}
-                index={index}
-                totalCount={galleryItems.length}
-                work={work}
-                isHovered={hoveredPlaneIndex === index}
-                onHoverChange={setHoveredPlaneIndex}
-                travel={travel}
-                stageWidth={stageWidth}
-                stageHeight={stageHeight}
-              />
-            ))}
-          </div>
-        </motion.div>
+      <motion.div
+        variants={pageRise}
+        className="absolute inset-x-0 bottom-0 z-10 overflow-hidden"
+        style={{
+          top: NAVBAR_HEIGHT,
+          isolation: 'isolate',
+        }}
+      >
+        <div className="absolute inset-0">
+          {galleryItems.map((work, index) => (
+            <Plane
+              key={`${work.slug}-${index}`}
+              index={index}
+              totalCount={galleryItems.length}
+              work={work}
+              isHovered={hoveredPlaneIndex === index}
+              onHoverChange={setHoveredPlaneIndex}
+              travel={travel}
+              stageWidth={stageWidth}
+              stageHeight={stageHeight}
+            />
+          ))}
+        </div>
+      </motion.div>
 
-        <motion.div
-          variants={pageRise}
-          className="pointer-events-none absolute bottom-9 right-24 z-[20] hidden text-[9px] font-black uppercase tracking-[0.2em] text-white/65 lg:block"
-        >
-          Drag to surf
-        </motion.div>
-      </motion.section>
+      <motion.div
+        variants={pageRise}
+        className="pointer-events-none absolute bottom-9 right-24 z-[20] hidden text-[9px] font-black uppercase tracking-[0.2em] text-white/65 lg:block"
+      >
+        Drag to surf
+      </motion.div>
+    </motion.section>
   );
 }

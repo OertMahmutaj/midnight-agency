@@ -1,9 +1,6 @@
 'use client';
 
-import Image from 'next/image';
 import { motion } from 'framer-motion';
-
-import { useEffect } from 'react';
 
 import MidnightButton from '@/src/components/MidnightButton';
 import WordScrambleText from '@/src/components/WordScrambleText';
@@ -14,47 +11,23 @@ import {
 } from '@/src/lib/pageMotion';
 
 export default function HomePage() {
-
-  useEffect(() => {
-    const previousScrollRestoration =
-      window.history.scrollRestoration;
-
-    window.history.scrollRestoration = 'manual';
-
-    const frame = window.requestAnimationFrame(() => {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'auto',
-      });
-
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    });
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-      window.history.scrollRestoration =
-        previousScrollRestoration;
-    };
-  }, []);
   return (
     <motion.main
       variants={pageContainer}
       initial="hidden"
       animate="show"
       className="
-    relative
-    isolate
-    min-h-[100svh]
-    overflow-x-hidden
-    bg-[#020708]
-    pt-24
-    sm:pt-28
-    md:pt-24
-  "
+        relative
+        isolate
+        min-h-[100svh]
+        overflow-x-hidden
+        bg-[#020708]
+        pt-24
+        sm:pt-28
+        md:pt-24
+      "
     >
-      {/* Background and CRT interaction layer */}
+      {/* Background video and CRT interaction layer */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <div
           className="
@@ -66,16 +39,30 @@ export default function HomePage() {
             -translate-y-1/2
           "
         >
-          <Image
-            src="/images/midnight-hero.png"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="pointer-events-none object-fill"
-          />
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster="/images/midnight-hero.png"
+            aria-hidden="true"
+            className="
+              pointer-events-none
+              absolute
+              inset-0
+              h-full
+              w-full
+              object-fill
+            "
+          >
+            <source
+              src="/videos/midnight-hero.mp4"
+              type="video/mp4"
+            />
+          </video>
 
-          {/* Desktop CRT terminal */}
+          {/* Desktop terminal positioned over the CRT */}
           <div
             className="
               absolute
@@ -92,7 +79,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Text readability overlay */}
+      {/* Text-readability overlay */}
       <div
         className="
           pointer-events-none
@@ -103,7 +90,7 @@ export default function HomePage() {
         "
       />
 
-      {/* Hero content */}
+      {/* Main hero content */}
       <motion.div
         variants={pageContainer}
         className="
@@ -111,18 +98,20 @@ export default function HomePage() {
           z-10
           mx-auto
           flex
+          min-h-[calc(100svh_-_6rem)]
           w-full
           max-w-7xl
-          flex-1
           items-start
           px-5
           pb-14
-          pt-16
+          pt-10
 
+          sm:min-h-[calc(100svh_-_7rem)]
           sm:px-8
           sm:pb-20
-          sm:pt-20
+          sm:pt-12
 
+          md:min-h-[calc(100svh_-_6rem)]
           md:px-10
 
           min-[1100px]:items-center

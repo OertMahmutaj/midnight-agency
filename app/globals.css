@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
-@font-face {
+/* @font-face {
   font-family: "K2D ExtraBold";
   src: url("/fonts/K2D-ExtraBold.ttf") format("truetype");
   font-weight: 800;
   font-style: normal;
   font-display: swap;
-}
+} */
 
 :root {
   --background: #000000;
@@ -25,7 +25,7 @@
     min-width: 320px;
     min-height: 100%;
     overflow-x: hidden;
-    background: var(--footer-background);
+    background: var(--background);
     overscroll-behavior-y: none;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -36,12 +36,7 @@
     min-height: 100%;
     margin: 0;
     overflow-x: hidden;
-
-    /*
-      This must match the footer.
-      It is what becomes visible during bottom overscroll.
-    */
-    background: var(--footer-background);
+    background: var(--background);
     color: var(--foreground);
 
     font-family: Arial, Helvetica, sans-serif;
@@ -50,16 +45,11 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-
   h1,
   h2,
   h3,
   .font-k2d {
-    font-family:
-      "K2D ExtraBold",
-      Arial,
-      Helvetica,
-      sans-serif;
+    font-family: var(--font-k2d), Arial, Helvetica, sans-serif;
   }
 
   button,
@@ -151,9 +141,7 @@
 
   backface-visibility: hidden;
 
-  transform:
-    rotateY(calc((var(--position) - 1) * 60deg))
-    translateZ(150px);
+  transform: rotateY(calc((var(--position) - 1) * 60deg)) translateZ(150px);
 }
 
 /* Bold text interaction */
@@ -195,6 +183,47 @@
   100% {
     opacity: 0;
   }
+}
+
+/* First-visit curtain */
+
+@keyframes midnight-curtain-wipe {
+  0%,
+  10% {
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  78% {
+    -webkit-clip-path: polygon(0 0, 0 0, 24% 100%, 0 100%);
+    clip-path: polygon(0 0, 0 0, 24% 100%, 0 100%);
+  }
+
+  100% {
+    -webkit-clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  }
+}
+
+.midnight-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  width: 100%;
+  max-width: 100vw;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+
+.midnight-curtain-panel {
+  position: absolute;
+  inset: 0;
+  background: #000000;
+  backface-visibility: hidden;
+  will-change: clip-path;
+  animation: midnight-curtain-wipe 1.05s cubic-bezier(0.76, 0, 0.24, 1) 0.25s both;
 }
 
 /* Rotating 3D slider */

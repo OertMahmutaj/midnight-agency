@@ -5,13 +5,21 @@ import Footer from '@/src/components/Footer';
 import MidnightCurtain from '@/src/components/MidnightCurtain';
 import ScrollToTopButton from '@/src/components/ScrollToTopButton';
 import ContactModal from '@/src/components/ContactModal';
+import {
+  INTRO_COOKIE,
+  INTRO_COOKIE_VERSION,
+} from '@/src/lib/introCookie';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const introSeen = (await cookies()).has('midnight_intro_seen');
+  const introCookie = (await cookies()).get(INTRO_COOKIE);
+  const introSeen = introCookie?.value === INTRO_COOKIE_VERSION;
 
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="bg-black antialiased">
+    <html lang="en" suppressHydrationWarning style={{ backgroundColor: '#000000' }}>
+      <head>
+        <meta name="theme-color" content="#000000" />
+      </head>
+      <body className="bg-black antialiased" style={{ backgroundColor: '#000000' }}>
         <div className="grain-fixed" />
         {!introSeen && <MidnightCurtain />}
 

@@ -6,6 +6,8 @@ import {
     useRef,
     useState,
     type KeyboardEvent as ReactKeyboardEvent,
+    type MouseEvent as ReactMouseEvent,
+    type PointerEvent as ReactPointerEvent,
 } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -73,6 +75,13 @@ export default function CrtCommandInput({
     } | null>(null);
 
     const suppressCommandClickRef = useRef(false);
+
+    const inputPointerStartRef = useRef<{
+        x: number;
+        y: number;
+    } | null>(null);
+
+    const inputPointerMovedRef = useRef(false);
 
     const [value, setValue] = useState('');
     const [focused, setFocused] = useState(false);
@@ -163,9 +172,75 @@ export default function CrtCommandInput({
     }, [isScreen]);
 
     function focusTerminal() {
-        inputRef.current?.focus({
-            preventScroll: true,
-        });
+        if (isScreen) {
+            inputRef.current?.focus({
+                preventScroll: true,
+            });
+            return;
+        }
+
+        inputRef.current?.focus();
+    }
+
+    function handleInputPointerDown(
+        event: ReactPointerEvent<HTMLDivElement>,
+    ) {
+        if (event.button !== 0) return;
+
+        if (isScreen) {
+            event.preventDefault();
+            focusTerminal();
+            return;
+        }
+
+        inputPointerStartRef.current = {
+            x: event.clientX,
+            y: event.clientY,
+        };
+        inputPointerMovedRef.current = false;
+    }
+
+    function handleInputPointerMove(
+        event: ReactPointerEvent<HTMLDivElement>,
+    ) {
+        const start = inputPointerStartRef.current;
+
+        if (!start || inputPointerMovedRef.current) return;
+
+        const distance = Math.hypot(
+            event.clientX - start.x,
+            event.clientY - start.y,
+        );
+
+        if (distance > 14) {
+            inputPointerMovedRef.current = true;
+        }
+    }
+
+    function handleInputPointerUp() {
+        if (isScreen) return;
+
+        inputPointerStartRef.current = null;
+    }
+
+    function cancelInputPointer() {
+        inputPointerStartRef.current = null;
+        inputPointerMovedRef.current = true;
+    }
+
+    function handleInputClick(
+        event: ReactMouseEvent<HTMLDivElement>,
+    ) {
+        if (isScreen) return;
+
+        event.preventDefault();
+
+        const moved = inputPointerMovedRef.current;
+        inputPointerMovedRef.current = false;
+
+        if (moved) return;
+
+        focusTerminal();
     }
 
     function executeCommand(command?: Command) {
@@ -303,12 +378,11 @@ export default function CrtCommandInput({
         >
             {/* INPUT PANEL — lower-left side of the CRT */}
             <div
-                onPointerDown={(event) => {
-                    if (event.button !== 0) return;
-
-                    event.preventDefault();
-                    focusTerminal();
-                }}
+                onPointerDown={handleInputPointerDown}
+                onPointerMove={handleInputPointerMove}
+                onPointerUp={handleInputPointerUp}
+                onPointerCancel={cancelInputPointer}
+                onClick={handleInputClick}
                 className={
                     isScreen
                         ? `
@@ -432,6 +506,7 @@ export default function CrtCommandInput({
                 inset-0
                 h-full
                 w-full
+                pointer-events-none
                 cursor-text
                 border-0
                 bg-transparent
@@ -529,12 +604,20 @@ export default function CrtCommandInput({
                                     }
                                 }}
                                 onPointerDown={(event) => {
+                                    if (event.button !== 0) return;
+
                                     commandPointerStartRef.current = {
                                         x: event.clientX,
                                         y: event.clientY,
                                     };
-
                                     suppressCommandClickRef.current = false;
+
+                                    if (isScreen) {
+                                        event.preventDefault();
+                                        inputRef.current?.focus({
+                                            preventScroll: true,
+                                        });
+                                    }
                                 }}
 
                                 onPointerMove={(event) => {

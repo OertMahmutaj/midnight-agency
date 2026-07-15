@@ -500,6 +500,7 @@ export default function CrtCommandInput({
                             autoComplete="off"
                             autoCapitalize="none"
                             spellCheck={false}
+                            style={{ fontSize: isScreen ? undefined : '16px' }}
                             aria-label="Type a Midnight navigation command"
                             className="
                 absolute

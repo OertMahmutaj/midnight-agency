@@ -26,7 +26,7 @@
     min-height: 100%;
     overflow-x: hidden;
     background: var(--background);
-    overscroll-behavior-y: none;
+    overscroll-behavior-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
   }

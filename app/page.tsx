@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 
 import MidnightButton from '@/src/components/MidnightButton';
 import WordScrambleText from '@/src/components/WordScrambleText';
@@ -11,6 +12,50 @@ import {
 } from '@/src/lib/pageMotion';
 
 export default function HomePage() {
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = heroVideoRef.current;
+
+    if (!video) return;
+
+    video.muted = true;
+    video.defaultMuted = true;
+
+    function tryPlay() {
+      const activeVideo = heroVideoRef.current;
+
+      if (!activeVideo || !activeVideo.paused) return;
+
+      void activeVideo.play().catch(() => {
+        // iOS may wait for the first touch when autoplay is restricted.
+      });
+    }
+
+    function resumeWhenVisible() {
+      if (!document.hidden) {
+        tryPlay();
+      }
+    }
+
+    tryPlay();
+
+    video.addEventListener('canplay', tryPlay);
+    window.addEventListener('pageshow', tryPlay);
+    document.addEventListener('visibilitychange', resumeWhenVisible);
+    document.addEventListener('touchstart', tryPlay, {
+      once: true,
+      passive: true,
+    });
+
+    return () => {
+      video.removeEventListener('canplay', tryPlay);
+      window.removeEventListener('pageshow', tryPlay);
+      document.removeEventListener('visibilitychange', resumeWhenVisible);
+      document.removeEventListener('touchstart', tryPlay);
+    };
+  }, []);
+
   return (
     <motion.main
       variants={pageContainer}
@@ -40,10 +85,13 @@ export default function HomePage() {
           "
         >
           <video
+            ref={heroVideoRef}
             autoPlay
             muted
             loop
             playsInline
+            controls={false}
+            disablePictureInPicture
             preload="auto"
             poster="/images/midnight-hero.png"
             aria-hidden="true"
@@ -57,7 +105,7 @@ export default function HomePage() {
             "
           >
             <source
-              src="/videos/midnight-hero.mp4"
+              src="/videos/midnight-hero.mp4?v=ios-faststart"
               type="video/mp4"
             />
           </video>

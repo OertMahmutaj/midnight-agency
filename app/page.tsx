@@ -10,6 +10,7 @@ import {
   pageContainer,
   pageRise,
 } from '@/src/lib/pageMotion';
+import { INTRO_COMPLETE_EVENT } from '@/src/lib/introCookie';
 
 export default function HomePage() {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
@@ -40,19 +41,27 @@ export default function HomePage() {
 
     tryPlay();
 
+    const retryTimers = [350, 1400, 2800].map((delay) =>
+      window.setTimeout(tryPlay, delay),
+    );
+
+    video.addEventListener('loadeddata', tryPlay);
     video.addEventListener('canplay', tryPlay);
+    window.addEventListener(INTRO_COMPLETE_EVENT, tryPlay);
     window.addEventListener('pageshow', tryPlay);
     document.addEventListener('visibilitychange', resumeWhenVisible);
-    document.addEventListener('touchstart', tryPlay, {
-      once: true,
+    document.addEventListener('touchend', tryPlay, {
       passive: true,
     });
 
     return () => {
+      retryTimers.forEach((timer) => window.clearTimeout(timer));
+      video.removeEventListener('loadeddata', tryPlay);
       video.removeEventListener('canplay', tryPlay);
+      window.removeEventListener(INTRO_COMPLETE_EVENT, tryPlay);
       window.removeEventListener('pageshow', tryPlay);
       document.removeEventListener('visibilitychange', resumeWhenVisible);
-      document.removeEventListener('touchstart', tryPlay);
+      document.removeEventListener('touchend', tryPlay);
     };
   }, []);
 
@@ -90,8 +99,10 @@ export default function HomePage() {
             muted
             loop
             playsInline
+            {...{ 'webkit-playsinline': 'true' }}
             controls={false}
             disablePictureInPicture
+            disableRemotePlayback
             preload="auto"
             poster="/images/midnight-hero.png"
             aria-hidden="true"
@@ -104,6 +115,11 @@ export default function HomePage() {
               object-fill
             "
           >
+            <source
+              src="/videos/midnight-hero-mobile.mp4?v=ios-baseline"
+              type="video/mp4"
+              media="(max-width: 767px)"
+            />
             <source
               src="/videos/midnight-hero.mp4?v=ios-faststart"
               type="video/mp4"

@@ -1,13 +1,5 @@
 @import "tailwindcss";
 
-/* @font-face {
-  font-family: "K2D ExtraBold";
-  src: url("/fonts/K2D-ExtraBold.ttf") format("truetype");
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-} */
-
 :root {
   --background: #000000;
   --foreground: #ffffff;

@@ -48,6 +48,7 @@ export default function Navbar() {
     left-0
     top-0
     z-[150]
+    font-k2d
     h-24
     w-full
     shrink-0
@@ -198,13 +199,9 @@ export default function Navbar() {
                       href={href}
                       onClick={() => setIsOpen(false)}
                       className="font-k2d flex min-h-[4.75rem] cursor-pointer items-center justify-between gap-5 py-4 text-5xl font-black uppercase leading-none tracking-normal transition-colors hover:text-[#E37D30] sm:min-h-[5.75rem] sm:text-6xl"
-                      style={{
-                        fontFamily:
-                          '"K2D ExtraBold", Arial, Helvetica, sans-serif',
-                      }}
                     >
                       <span>{label}</span>
-                      <span className="font-mono text-[10px] font-black tracking-[0.18em] text-white/38">
+                      <span className="text-[10px] font-black tracking-[0.18em] text-white/38">
                         {String(index + 1).padStart(2, '0')}
                       </span>
                     </Link>
@@ -220,7 +217,7 @@ export default function Navbar() {
                     duration: 0.4,
                     ease: menuEase,
                   }}
-                  className="flex items-center justify-between gap-5 pt-6 font-mono text-[9px] uppercase tracking-[0.18em] text-white/38"
+                  className="flex items-center justify-between gap-5 pt-6 text-[9px] uppercase tracking-[0.18em] text-white/38"
                 >
                   <span>Midnight Agency</span>
                   <span>Tirana, Albania</span>

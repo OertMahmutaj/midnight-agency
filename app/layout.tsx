@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers';
+import localFont from 'next/font/local';
 import './globals.css';
 import Navbar from '@/src/components/Navbar';
 import Footer from '@/src/components/Footer';
@@ -10,6 +11,15 @@ import {
   INTRO_COOKIE_VERSION,
 } from '@/src/lib/introCookie';
 
+const k2d = localFont({
+  src: '../public/fonts/K2D-ExtraBold.ttf',
+  variable: '--font-k2d',
+  weight: '800',
+  style: 'normal',
+  display: 'swap',
+  fallback: ['Arial', 'Helvetica', 'sans-serif'],
+});
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const introCookie = (await cookies()).get(INTRO_COOKIE);
   const introSeen = introCookie?.value === INTRO_COOKIE_VERSION;
@@ -19,7 +29,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         <meta name="theme-color" content="#000000" />
       </head>
-      <body className="bg-black antialiased" style={{ backgroundColor: '#000000' }}>
+      <body className={`${k2d.variable} bg-black antialiased`} style={{ backgroundColor: '#000000' }}>
         <div className="grain-fixed" />
         {!introSeen && <MidnightCurtain />}
 

@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
+  INTRO_COMPLETE_EVENT,
   INTRO_COOKIE,
   INTRO_COOKIE_VERSION,
 } from '@/src/lib/introCookie';
@@ -9,21 +10,24 @@ import {
 export default function MidnightCurtain() {
   const [isVisible, setIsVisible] = useState(true);
 
+  const finishIntro = useCallback(() => {
+    document.cookie = `${INTRO_COOKIE}=${INTRO_COOKIE_VERSION}; path=/; SameSite=Lax`;
+    window.dispatchEvent(new Event(INTRO_COMPLETE_EVENT));
+    setIsVisible(false);
+  }, []);
+
   useEffect(() => {
     /*
      * Safety fallback:
      * guarantees the curtain disappears even if the mobile
      * browser interrupts the animation.
      */
-    const fallbackTimer = window.setTimeout(() => {
-      document.cookie = `${INTRO_COOKIE}=${INTRO_COOKIE_VERSION}; path=/; SameSite=Lax`;
-      setIsVisible(false);
-    }, 1800);
+    const fallbackTimer = window.setTimeout(finishIntro, 1800);
 
     return () => {
       window.clearTimeout(fallbackTimer);
     };
-  }, []);
+  }, [finishIntro]);
 
   if (!isVisible) {
     return null;
@@ -35,8 +39,7 @@ export default function MidnightCurtain() {
         className="midnight-curtain-panel"
         onAnimationEnd={(event) => {
           if (event.animationName === 'midnight-curtain-wipe') {
-            document.cookie = `${INTRO_COOKIE}=${INTRO_COOKIE_VERSION}; path=/; SameSite=Lax`;
-            setIsVisible(false);
+            finishIntro();
           }
         }}
       >

@@ -44,7 +44,7 @@ const MOBILE_INERTIA_STRENGTH = 0.00072;
 const CARD_MIN_WIDTH = 148;
 const CARD_FLUID_WIDTH = 0.097;
 const CARD_MAX_WIDTH = 188;
-const CARD_HEIGHT_RATIO = 1.8;
+const CARD_HEIGHT_RATIO = 10 / 7;
 const CARD_EDGE_PADDING = 24;
 const STACK_CURVE_POWER = 1.35;
 const CAROUSEL_Y_OFFSET = 55;
@@ -65,10 +65,12 @@ function getPathSpan(width: number) {
 }
 
 function getCardWidth(width: number) {
-  if (width < 640) return clamp(width * 0.36, 116, 150);
-  if (width < 1024) return clamp(width * 0.24, 150, 184);
+  if (width < 640) return Math.round(clamp(width * 0.36, 116, 150));
+  if (width < 1024) return Math.round(clamp(width * 0.24, 150, 184));
 
-  return clamp(width * CARD_FLUID_WIDTH, CARD_MIN_WIDTH, CARD_MAX_WIDTH);
+  return Math.round(
+    clamp(width * CARD_FLUID_WIDTH, CARD_MIN_WIDTH, CARD_MAX_WIDTH)
+  );
 }
 
 function SelectedWorkIntro({ compact = false }: { compact?: boolean }) {
@@ -392,14 +394,14 @@ function Plane({
             onDragStart={(event) => event.preventDefault()}
             className="group block cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#E37D30]"
           >
-            <div className="relative aspect-[5/9] overflow-hidden bg-black shadow-[0_18px_45px_rgba(0,0,0,0.55)]">
+            <div className="relative aspect-[7/10] overflow-hidden bg-black shadow-[0_18px_45px_rgba(0,0,0,0.55)]">
               <Image
                 src={work.image}
                 alt={work.title}
                 fill
                 draggable={false}
-                sizes="(max-width: 639px) 36vw, (max-width: 1023px) 24vw, (min-width: 1939px) 188px, (min-width: 1526px) 9.7vw, 148px"
-                quality={95}
+                sizes="(max-width: 639px) 54vw, (max-width: 1023px) 36vw, (min-width: 1939px) 282px, (min-width: 1526px) 14.55vw, 222px"
+                quality={80}
                 loading={index < 8 ? 'eager' : 'lazy'}
                 className="pointer-events-none object-cover object-center"
               />
@@ -535,6 +537,38 @@ function InteractiveWorkGallery() {
     null
   );
   const inertiaRef = useRef<{ stop: () => void } | null>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+
+    if (!container) {
+      return;
+    }
+
+    function updateStageSize() {
+      const activeContainer = containerRef.current;
+
+      if (!activeContainer) {
+        return;
+      }
+
+      const width = Math.max(1, activeContainer.clientWidth);
+      const height = Math.max(
+        1,
+        activeContainer.clientHeight - NAVBAR_HEIGHT
+      );
+
+      stageWidth.set(width);
+      stageHeight.set(height);
+    }
+
+    const resizeObserver = new ResizeObserver(updateStageSize);
+
+    resizeObserver.observe(container);
+    updateStageSize();
+
+    return () => resizeObserver.disconnect();
+  }, [stageHeight, stageWidth]);
 
   useEffect(() => {
     const container = containerRef.current;

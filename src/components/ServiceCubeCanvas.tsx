@@ -8,7 +8,7 @@ import ServiceCube from '@/src/components/ServiceCube';
 export default function ServiceCubeCanvas() {
   return (
     <Canvas
-      dpr={[1, 1.15]}
+      dpr={[1, 2]}
       frameloop="always"
       gl={{
         antialias: true,

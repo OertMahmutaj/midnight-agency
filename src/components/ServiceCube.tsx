@@ -20,7 +20,7 @@ const MAX_FRAME_DELTA = 0.1;
 function prepareCubeTextures(textures: Texture[]) {
   textures.forEach((texture) => {
     texture.colorSpace = SRGBColorSpace;
-    texture.anisotropy = 4;
+    texture.anisotropy = 8;
     texture.needsUpdate = true;
   });
 }

@@ -14,6 +14,9 @@ const cubeFaces = [
   '/cube/06.webp',
 ];
 
+const ROTATION_SPEED = 0.3;
+const MAX_FRAME_DELTA = 0.1;
+
 function prepareCubeTextures(textures: Texture[]) {
   textures.forEach((texture) => {
     texture.colorSpace = SRGBColorSpace;
@@ -31,7 +34,8 @@ export default function ServiceCube() {
   useFrame((_, delta) => {
     if (!meshRef.current) return;
 
-    meshRef.current.rotation.y += Math.min(delta, 1 / 30) * 0.3;
+    // Keep normal late frames time-accurate while ignoring long tab/background pauses.
+    meshRef.current.rotation.y += Math.min(delta, MAX_FRAME_DELTA) * ROTATION_SPEED;
   });
 
   return (

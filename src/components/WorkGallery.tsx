@@ -24,7 +24,7 @@ import {
 
 import WordScrambleText from '@/src/components/WordScrambleText';
 import PageNumber from '@/src/components/PageNumber';
-import { getWorks, type WorkItem } from '@/src/data/works';
+import { getCarouselItems, getWorks, type WorkItem } from '@/src/data/works';
 import { withLocale, type Locale } from '@/src/lib/i18n';
 import { pageContainer, pageRise } from '@/src/lib/pageMotion';
 
@@ -45,7 +45,7 @@ const MOBILE_INERTIA_STRENGTH = 0.00072;
 const CARD_MIN_WIDTH = 148;
 const CARD_FLUID_WIDTH = 0.097;
 const CARD_MAX_WIDTH = 188;
-const CARD_HEIGHT_RATIO = 10 / 7;
+const CARD_HEIGHT_RATIO = 1801 / 1201;
 const CARD_EDGE_PADDING = 24;
 const STACK_CURVE_POWER = 1.35;
 const CAROUSEL_Y_OFFSET = 55;
@@ -57,6 +57,8 @@ const NUMBER_X_OFFSET = -48;
 const TITLE_X_GAP = 40;
 const NUMBER_REVEAL_POSITION = 0.69;
 const NUMBER_REVEAL_FADE = 20;
+const CARD_IMAGE_SIZES = '(max-width: 639px) 30vw, (max-width: 1023px) 20vw, 220px';
+const INITIAL_LCP_PLANE_INDEX = 6;
 
 function getPathSpan(width: number) {
   if (width < 640) return 10;
@@ -230,6 +232,7 @@ function Plane({
   locale,
 }: PlaneProps) {
   const copy = galleryCopy[locale];
+  const caseStudyHref = withLocale(`/work/${work.slug}`, locale);
   const phase = useTransform(travel, (latestTravel) =>
     wrap(0, totalCount, index + latestTravel)
   );
@@ -421,7 +424,8 @@ function Plane({
       >
         <motion.div className="relative" style={{ y: hoverY }}>
           <Link
-            href={withLocale(`/work/${work.slug}`, locale)}
+            href={caseStudyHref}
+            prefetch={false}
             aria-label={`${copy.view} ${work.title}`}
             draggable={false}
             onClick={handleClick}
@@ -435,15 +439,17 @@ function Plane({
             onDragStart={(event) => event.preventDefault()}
             className="group block cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#E37D30]"
           >
-            <div className="relative aspect-[7/10] overflow-hidden bg-black shadow-[0_18px_45px_rgba(0,0,0,0.55)]">
+            <div className="relative aspect-[1201/1801] overflow-hidden bg-black shadow-[0_18px_45px_rgba(0,0,0,0.55)]">
               <Image
                 src={work.image}
                 alt={work.title}
                 fill
                 draggable={false}
-                sizes="(max-width: 639px) 54vw, (max-width: 1023px) 36vw, (min-width: 1939px) 282px, (min-width: 1526px) 14.55vw, 222px"
+                sizes={CARD_IMAGE_SIZES}
                 quality={80}
-                loading={index < 8 ? 'eager' : 'lazy'}
+                {...(index === INITIAL_LCP_PLANE_INDEX
+                  ? { preload: true, fetchPriority: 'high' as const }
+                  : { loading: 'lazy' as const })}
                 className="pointer-events-none object-cover object-center"
               />
             </div>
@@ -532,7 +538,26 @@ export default function WorkGallery({ locale = 'en' }: { locale?: Locale }) {
   );
 
   if (!isHydrated) {
-    return <div className="h-[100svh] min-h-[680px] lg:min-h-[760px]" />;
+    const initialLcpWork = getCarouselItems(locale)[INITIAL_LCP_PLANE_INDEX];
+
+    return (
+      <div className="relative h-[100svh] min-h-[680px] overflow-hidden lg:min-h-[760px]">
+        {initialLcpWork ? (
+          <Image
+            src={initialLcpWork.image}
+            alt=""
+            aria-hidden="true"
+            width={1201}
+            height={1801}
+            sizes={CARD_IMAGE_SIZES}
+            quality={80}
+            preload
+            fetchPriority="high"
+            className="pointer-events-none absolute h-px w-px opacity-0"
+          />
+        ) : null}
+      </div>
+    );
   }
 
   return <InteractiveWorkGallery locale={locale} />;
@@ -541,19 +566,14 @@ export default function WorkGallery({ locale = 'en' }: { locale?: Locale }) {
 function InteractiveWorkGallery({ locale }: { locale: Locale }) {
   const router = useRouter();
   const workItems = getWorks(locale);
+  const carouselItems = getCarouselItems(locale);
   const copy = galleryCopy[locale];
   const containerRef = useRef<HTMLElement | null>(null);
   const [hoveredPlaneIndex, setHoveredPlaneIndex] = useState<number | null>(
     null
   );
 
-  const galleryItems =
-    workItems.length === 0
-      ? []
-      : Array.from(
-        { length: Math.max(VISIBLE_PLANE_COUNT, workItems.length) },
-        (_, index) => workItems[index % workItems.length]
-      );
+  const galleryItems = carouselItems;
 
   const initialStageWidth = Math.max(
     1,
@@ -682,40 +702,6 @@ function InteractiveWorkGallery({ locale }: { locale: Locale }) {
   }, []);
 
   useEffect(() => {
-    const container = containerRef.current;
-
-    if (!container) {
-      return;
-    }
-
-    function handleWheel(event: WheelEvent) {
-      const isCompact = stageWidth.get() < 1024;
-
-      if (isCompact && Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
-        return;
-      }
-
-      event.preventDefault();
-      inertiaRef.current?.stop();
-      inertiaRef.current = null;
-
-      const movement = isCompact
-        ? -event.deltaX
-        : Math.abs(event.deltaY) >= Math.abs(event.deltaX)
-          ? event.deltaY
-          : -event.deltaX;
-
-      targetTravel.set(
-        targetTravel.get() + movement * WHEEL_SENSITIVITY
-      );
-    }
-
-    container.addEventListener('wheel', handleWheel, { passive: false });
-
-    return () => container.removeEventListener('wheel', handleWheel);
-  }, [stageWidth, targetTravel]);
-
-  useEffect(() => {
     return () => {
       inertiaRef.current?.stop();
 
@@ -818,33 +804,9 @@ function InteractiveWorkGallery({ locale }: { locale: Locale }) {
   }
 
   function findPlaneAtPoint(clientX: number, clientY: number) {
-    const container = containerRef.current;
-
-    if (!container) {
-      return undefined;
-    }
-
-    return Array.from(
-      container.querySelectorAll<HTMLElement>('[data-work-plane]')
-    )
-      .filter((plane) => {
-        const style = window.getComputedStyle(plane);
-        const rect = plane.getBoundingClientRect();
-
-        return (
-          style.visibility !== 'hidden' &&
-          style.pointerEvents !== 'none' &&
-          clientX >= rect.left &&
-          clientX <= rect.right &&
-          clientY >= rect.top &&
-          clientY <= rect.bottom
-        );
-      })
-      .sort(
-        (first, second) =>
-          Number(window.getComputedStyle(second).zIndex) -
-          Number(window.getComputedStyle(first).zIndex)
-      )[0];
+    return document
+      .elementFromPoint(clientX, clientY)
+      ?.closest<HTMLElement>('[data-work-plane]') ?? undefined;
   }
 
   function handleStagePointerMove(event: ReactPointerEvent<HTMLElement>) {

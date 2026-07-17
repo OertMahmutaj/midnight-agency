@@ -1,11 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Canvas } from '@react-three/fiber';
-import { Environment, OrbitControls } from '@react-three/drei';
 import MidnightButton from '@/src/components/MidnightButton';
 import PageNumber from '@/src/components/PageNumber';
-import ServiceCube from '@/src/components/ServiceCube';
+import DeferredServiceCube from '@/src/components/DeferredServiceCube';
 import { pageContainer as container, pageRise as rise } from '@/src/lib/pageMotion';
 import { withLocale, type Locale } from '@/src/lib/i18n';
 
@@ -91,59 +89,53 @@ export default function ServicesPage({ locale = 'en' }: { locale?: Locale }) {
 
   return (
     <main className="relative min-h-screen w-full overflow-x-clip px-5 pb-14 pt-28 text-white sm:px-8 sm:pb-20 sm:pt-32 md:px-10 lg:px-16">
-      <motion.section
-        variants={container}
-        initial="hidden"
-        animate="show"
+      <section
         className="mx-auto grid max-w-7xl gap-8 lg:min-h-[72vh] lg:grid-cols-[minmax(0,1fr)_minmax(360px,440px)] lg:items-center lg:gap-6 xl:grid-cols-[minmax(0,1fr)_500px] xl:gap-10"
       >
         <div className="min-w-0 w-full lg:max-w-[800px]">
-          <motion.p
-            variants={rise}
-            className="mb-5 text-[10px] font-black uppercase tracking-[0.35em] text-[#E37D30] sm:text-xs"
+          <p
+            style={{ animationDelay: '160ms' }}
+            className="page-rise-entry mb-5 text-[10px] font-black uppercase tracking-[0.35em] text-[#E37D30] sm:text-xs"
           >
             {copy.eyebrow}
-          </motion.p>
+          </p>
 
-          <motion.h1
-            variants={rise}
-            className="max-w-[11ch] text-[clamp(2.8rem,11vw,7rem)] font-black uppercase leading-[0.8] tracking-[-0.04em] sm:max-w-[12ch] lg:max-w-none"
+          <h1
+            style={{ animationDelay: '260ms' }}
+            className="page-rise-entry max-w-[11ch] text-[clamp(2.8rem,11vw,7rem)] font-black uppercase leading-[0.8] tracking-[-0.04em] sm:max-w-[12ch] lg:max-w-none"
           >
             {copy.title}{' '}
             <span className="whitespace-nowrap">
               {copy.midnight}<PageNumber value="03" />
             </span>
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            variants={rise}
-            className="mt-6 max-w-xl text-sm leading-7 text-white/62 sm:mt-7 sm:text-base md:text-lg"
+          <p
+            style={{ animationDelay: '360ms' }}
+            className="page-rise-entry mt-6 max-w-xl text-sm leading-7 text-white/62 sm:mt-7 sm:text-base md:text-lg"
           >
             {copy.description}
-          </motion.p>
+          </p>
 
-          <motion.div variants={rise} className="mt-8 w-full max-w-[16rem] overflow-visible px-2 py-2 sm:px-0 lg:mt-10">
+          <div
+            style={{ animationDelay: '460ms' }}
+            className="page-rise-entry mt-8 w-full max-w-[16rem] overflow-visible px-2 py-2 sm:px-0 lg:mt-10"
+          >
             <MidnightButton href={withLocale('/contact', locale)}>{copy.cta}</MidnightButton>
-          </motion.div>
+          </div>
         </div>
 
-        <motion.div
-          variants={rise}
-          className="relative min-h-[300px] overflow-hidden sm:min-h-[410px] lg:min-h-[560px] xl:min-h-[620px]"
+        <div
+          style={{ animationDelay: '560ms' }}
+          className="page-rise-entry relative min-h-[300px] overflow-hidden sm:min-h-[410px] lg:min-h-[560px] xl:min-h-[620px]"
         >
           <div className="absolute left-1/2 top-6 h-[250px] w-[250px] -translate-x-1/2 rounded-[46%_54%_58%_42%/45%_42%_58%_55%] border border-white/14 sm:top-8 sm:h-[340px] sm:w-[340px] lg:left-[8%] lg:h-[460px] lg:w-[460px] lg:translate-x-0 xl:left-[12%] xl:h-[500px] xl:w-[500px]" />
 
           <div className="relative z-10 mx-auto h-[300px] w-full max-w-[340px] touch-pan-y sm:h-[410px] sm:max-w-[500px] lg:h-[560px] lg:max-w-none xl:h-[620px]">
-            <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 7.8], fov: 45 }}>
-              <ambientLight intensity={0.55} />
-              <directionalLight position={[10, 10, 5]} intensity={1.15} />
-              <Environment files="/hdr/potsdamer_platz_1k.hdr" />
-              <ServiceCube locale={locale} />
-              <OrbitControls enableZoom={false} enablePan={false} />
-            </Canvas>
+            <DeferredServiceCube />
           </div>
-        </motion.div>
-      </motion.section>
+        </div>
+      </section>
 
       <motion.section
         variants={container}

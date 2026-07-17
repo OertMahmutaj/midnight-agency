@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { ButtonHTMLAttributes, MouseEventHandler, ReactNode } from 'react';
 
 type SharedProps = {
@@ -25,6 +26,7 @@ type NativeButtonProps = SharedProps & {
 type MidnightButtonProps = LinkButtonProps | NativeButtonProps;
 
 export default function MidnightButton(props: MidnightButtonProps) {
+  const router = useRouter();
   const { children, className = '' } = props;
   const classes = `group relative isolate inline-flex h-12 w-full cursor-pointer overflow-visible text-[10px] font-black uppercase tracking-[0.06em] text-black disabled:cursor-wait disabled:opacity-70 sm:h-14 sm:text-xs ${className}`;
   const content = (
@@ -40,8 +42,17 @@ export default function MidnightButton(props: MidnightButtonProps) {
   );
 
   if ('href' in props && props.href) {
+    const href = props.href;
+
     return (
-      <Link href={props.href} className={classes}>
+      <Link
+        href={href}
+        prefetch={false}
+        onMouseEnter={() => router.prefetch(href)}
+        onFocus={() => router.prefetch(href)}
+        onTouchStart={() => router.prefetch(href)}
+        className={classes}
+      >
         {content}
       </Link>
     );

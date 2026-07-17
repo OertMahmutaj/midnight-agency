@@ -36,8 +36,8 @@ export async function generateMetadata({
     type: 'article',
     image: {
       url: work.image,
-      width: 736,
-      height: 920,
+      width: 737,
+      height: 921,
       alt: `${work.title} brand and digital design case study`,
     },
   });

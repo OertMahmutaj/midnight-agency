@@ -18,6 +18,7 @@ type ContactModalProps = {
   triggerLabel?: string;
   showTrigger?: boolean;
   locale?: Locale;
+  initialOpen?: boolean;
 };
 
 const modalCopy = {
@@ -40,11 +41,12 @@ export default function ContactModal({
   triggerLabel,
   showTrigger = true,
   locale,
+  initialOpen = false,
 }: ContactModalProps) {
   const pathname = usePathname();
   const resolvedLocale = locale ?? localeFromPathname(pathname);
   const copy = modalCopy[resolvedLocale];
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(initialOpen);
 
   const openModal = useCallback(() => {
     setIsOpen(true);

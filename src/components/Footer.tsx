@@ -21,7 +21,7 @@ const columnsByLocale: Record<Locale, FooterColumn[]> = {
   en: [
     {
       title: 'Services',
-      links: ['Brand Development', 'Still & Motion', 'Communication', 'All Services'],
+      links: ['Brand Development', 'Still & Motion', 'Communication'],
     },
     {
       title: 'Company',
@@ -29,21 +29,21 @@ const columnsByLocale: Record<Locale, FooterColumn[]> = {
         { label: 'Work', href: '/work' },
         { label: 'Services', href: '/services' },
         { label: 'People', href: '/people' },
-        { label: 'Contact', href: '/contact' },
+        // { label: 'Contact', href: '/contact' },
       ],
     },
     {
       title: 'Contact',
-      intro: 'Talk to us or ask us anything.',
+      // intro: 'Talk to us or ask us anything.',
       links: [
-        { label: 'hello@midnight.studio', href: 'mailto:hello@midnight.studio' },
+        { label: 'Email', href: 'mailto:midnightcoffee.studio.x@gmail.com' },
         { label: 'Contact Us', href: '/contact' },
         { label: 'Careers', href: '/contact' },
       ],
     },
     {
       title: 'Social',
-      links: ['Instagram', 'Behance', 'LinkedIn', 'Facebook', 'Vimeo'],
+      links: ['Instagram', 'LinkedIn'],
     },
     {
       title: 'Legal',
@@ -53,7 +53,7 @@ const columnsByLocale: Record<Locale, FooterColumn[]> = {
   sq: [
     {
       title: 'Shërbimet',
-      links: ['Zhvillim Marke', 'Imazh & Motion', 'Komunikim', 'Të Gjitha Shërbimet'],
+      links: ['Zhvillim Marke', 'Imazh & Motion', 'Komunikim'],
     },
     {
       title: 'Kompania',
@@ -61,12 +61,12 @@ const columnsByLocale: Record<Locale, FooterColumn[]> = {
         { label: 'Projektet', href: '/work' },
         { label: 'Shërbimet', href: '/services' },
         { label: 'Ekipi', href: '/people' },
-        { label: 'Kontakt', href: '/contact' },
+        // { label: 'Kontakt', href: '/contact' },
       ],
     },
     {
       title: 'Kontakt',
-      intro: 'Flisni me ne ose na pyesni për çdo gjë.',
+      // intro: 'Flisni me ne ose na pyesni për çdo gjë.',
       links: [
         { label: 'hello@midnight.studio', href: 'mailto:hello@midnight.studio' },
         { label: 'Na Kontakto', href: '/contact' },
@@ -75,7 +75,7 @@ const columnsByLocale: Record<Locale, FooterColumn[]> = {
     },
     {
       title: 'Rrjetet Sociale',
-      links: ['Instagram', 'Behance', 'LinkedIn', 'Facebook', 'Vimeo'],
+      links: ['Instagram', 'LinkedIn'],
     },
     {
       title: 'Ligjore',
@@ -107,12 +107,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {columns.map((column) => (
             <div key={column.title} className="min-w-0">
-              <h3 className="mb-6 text-[10px] font-bold uppercase tracking-[0.36em] text-black/35 sm:mb-8 sm:text-[11px] sm:tracking-[0.45em]">
+              <p className="mb-6 font-k2d text-[10px] font-bold uppercase tracking-[0.36em] text-black/60 sm:mb-8 sm:text-[11px] sm:tracking-[0.45em]">
                 {column.title}
-              </h3>
+              </p>
 
               {column.intro ? (
-                <p className="mb-5 max-w-[14rem] text-sm leading-6 text-black/45">{column.intro}</p>
+                <p className="mb-5 max-w-[14rem] text-sm leading-6 text-black/65">{column.intro}</p>
               ) : null}
 
               <ul className="space-y-3 text-sm text-black/85 sm:space-y-4">
@@ -126,7 +126,6 @@ export default function Footer() {
                   return (
                     <li key={label} className="min-w-0">
                       <Link href={href} className="group inline-flex max-w-full items-start gap-2 break-words transition-colors duration-300 hover:text-[#E37D30]">
-                        <span className="shrink-0 text-black/45 transition-colors duration-300 group-hover:text-[#E37D30]">&gt;</span>
                         <span className="min-w-0 break-all sm:break-words">{label}</span>
                       </Link>
                     </li>
@@ -146,7 +145,7 @@ export default function Footer() {
             ))}
           </h2>
 
-          <p className="text-xs text-black/40 sm:text-sm">
+          <p className="text-xs text-black/65 sm:text-sm">
             © {new Date().getFullYear()} Midnight. {copy.rights}
           </p>
         </div>

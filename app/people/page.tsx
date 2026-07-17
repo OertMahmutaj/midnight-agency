@@ -1,50 +1,59 @@
 'use client';
 
-import { useState } from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
+
 import PageNumber from '@/src/components/PageNumber';
+import type { Locale } from '@/src/lib/i18n';
 import {
   pageContainer,
   pageRise,
-  headingRise,
-  smoothEase,
 } from '@/src/lib/pageMotion';
-import type { Locale } from '@/src/lib/i18n';
 
 type TeamMember = {
   name: string;
   role: string;
+  specialty: string;
   bio: string;
   skills: string[];
+  image: string;
 };
 
 const teamByLocale: Record<Locale, TeamMember[]> = {
   en: [
-  {
-    name: 'Oert Mahmutaj',
-    role: 'Co-Founder & Lead Developer',
-    bio: 'Analytical developer with a background in Physics and Economic Informatics. Focused on scalable architecture, automation and high-performance web experiences.',
-    skills: ['Next.js', 'React', 'MERN', 'Python', 'AI'],
-  },
-  {
-    name: 'Albano Jasharaj',
-    role: 'Co-Founder & Creative Director',
-    bio: 'Creative strategist focused on branding, identity systems, motion and digital experiences that feel premium and memorable.',
-    skills: ['Branding', 'UI', 'Motion', 'Identity', 'Art Direction'],
-  },
+    {
+      name: 'Oert Mahmutaj',
+      role: 'Co-Founder & Lead Developer',
+      specialty: 'Technology & Systems',
+      bio: 'An analytical developer with a background in Physics and Economic Informatics. Oert turns ambitious ideas into scalable architecture, thoughtful automation, and high-performance digital experiences built to last.',
+      skills: ['Next.js', 'React', 'MERN', 'Python', 'AI'],
+      image: '/people/oert.webp',
+    },
+    {
+      name: 'Albano Jasharaj',
+      role: 'Co-Founder & Creative Director',
+      specialty: 'Brand & Direction',
+      bio: 'A creative strategist shaping brands through identity, motion, and art direction. Albano builds visual systems with a clear point of view, giving every digital experience a premium and memorable character.',
+      skills: ['Branding', 'UI', 'Motion', 'Identity', 'Art Direction'],
+      image: '/people/albano.webp',
+    },
   ],
   sq: [
     {
       name: 'Oert Mahmutaj',
       role: 'Bashkëthemelues & Lead Developer',
-      bio: 'Zhvillues analitik me formim në Fizikë dhe Informatikë Ekonomike. I fokusuar te arkitektura e shkallëzueshme, automatizimi dhe eksperiencat web me performancë të lartë.',
+      specialty: 'Teknologji & Sisteme',
+      bio: 'Zhvillues analitik me formim në Fizikë dhe Informatikë Ekonomike. Oerti i kthen idetë ambicioze në arkitekturë të shkallëzueshme, automatizim të menduar mirë dhe eksperienca digjitale me performancë të lartë.',
       skills: ['Next.js', 'React', 'MERN', 'Python', 'AI'],
+      image: '/people/oert.webp',
     },
     {
       name: 'Albano Jasharaj',
       role: 'Bashkëthemelues & Drejtor Kreativ',
-      bio: 'Strateg kreativ i fokusuar te branding-u, sistemet e identitetit, motion dhe eksperiencat digjitale që ndihen premium dhe mbahen mend.',
+      specialty: 'Markë & Drejtim Kreativ',
+      bio: 'Strateg kreativ që ndërton marka përmes identitetit, motion dhe drejtimit artistik. Albano krijon sisteme vizuale me një këndvështrim të qartë, duke i dhënë çdo eksperience digjitale karakter premium dhe të paharrueshëm.',
       skills: ['Branding', 'UI', 'Motion', 'Identitet', 'Drejtim Artistik'],
+      image: '/people/albano.webp',
     },
   ],
 };
@@ -54,18 +63,31 @@ const peopleCopy = {
     eyebrow: 'About Us',
     titleFirst: 'The',
     titleSecond: 'People',
-    intro: 'Midnight Coffee is built by two founders combining engineering, branding and digital strategy to create products that stand out.',
+    intro: 'Midnight is built by two founders combining engineering, branding, and digital strategy to create work that is sharp in both thought and execution.',
+    founders: '02 Founders',
+    location: 'Tirana, Albania',
+    reach: 'Working Worldwide',
+    portrait: 'Portrait of',
+    closingEyebrow: 'Two disciplines. One studio.',
+    closingTitle: 'Built Together.',
+    closingText: 'Engineering gives ideas structure. Creative direction gives them a point of view. Midnight lives in the overlap.',
   },
   sq: {
     eyebrow: 'Rreth Nesh',
     titleFirst: 'Ekipi',
     titleSecond: 'Midnight',
-    intro: 'Midnight është ndërtuar nga dy themelues që bashkojnë inxhinierinë, branding-un dhe strategjinë digjitale për të krijuar produkte që bien në sy.',
+    intro: 'Midnight është ndërtuar nga dy themelues që bashkojnë inxhinierinë, branding-un dhe strategjinë digjitale për të krijuar punë të mprehtë në ide dhe në realizim.',
+    founders: '02 Themelues',
+    location: 'Tiranë, Shqipëri',
+    reach: 'Punojmë Globalisht',
+    portrait: 'Portret i',
+    closingEyebrow: 'Dy disiplina. Një studio.',
+    closingTitle: 'Ndërtuar Bashkë.',
+    closingText: 'Inxhinieria u jep strukturë ideve. Drejtimi kreativ u jep këndvështrim. Midnight jeton aty ku këto dy botë takohen.',
   },
 } satisfies Record<Locale, Record<string, string>>;
 
 export default function PeoplePage({ locale = 'en' }: { locale?: Locale }) {
-  const [active, setActive] = useState(0);
   const team = teamByLocale[locale];
   const copy = peopleCopy[locale];
 
@@ -74,86 +96,164 @@ export default function PeoplePage({ locale = 'en' }: { locale?: Locale }) {
       variants={pageContainer}
       initial="hidden"
       animate="show"
-      className="min-h-screen overflow-x-clip px-5 pb-16 pt-28 text-white sm:px-8 sm:pb-20 sm:pt-32 md:px-10 lg:px-16"
+      className="relative min-h-screen overflow-x-clip px-5 pb-16 pt-28 text-white sm:px-8 sm:pb-20 sm:pt-32 md:px-10 lg:px-16"
     >
-      <motion.section
-        variants={pageContainer}
-        className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 xl:gap-20"
-      >
-        <motion.div variants={pageContainer} className="min-w-0 lg:sticky lg:top-32 lg:self-start">
-          <motion.p variants={pageRise} className="mb-5 text-[10px] font-black uppercase tracking-[0.35em] text-[#E37D30] sm:text-xs">
-            {copy.eyebrow}
-          </motion.p>
+      <div className="pointer-events-none absolute inset-0 opacity-[0.16]">
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(180deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:28vw_100%,100%_96px] md:bg-[size:10vw_100%,100%_120px]" />
+      </div>
 
-          <motion.h1
-            variants={headingRise}
-            className="w-fit max-w-full pb-[0.08em] pr-[0.08em] text-[clamp(3rem,9vw,8rem)] font-black uppercase leading-[0.84] tracking-[-0.04em]"
+      <section
+        className="relative z-10 mx-auto grid max-w-7xl gap-8 border-b border-white/14 pb-10 sm:pb-14 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.7fr)] lg:items-end lg:gap-16"
+      >
+        <div className="min-w-0">
+          <p
+            style={{ animationDelay: '160ms' }}
+            className="page-rise-entry mb-5 text-[10px] font-black uppercase tracking-[0.35em] text-[#E37D30] sm:text-xs"
+          >
+            {copy.eyebrow}
+          </p>
+
+          <h1
+            style={{ animationDelay: '260ms' }}
+            className="page-rise-entry w-fit max-w-full pb-[0.08em] pr-[0.08em] text-[clamp(3rem,10vw,8rem)] font-black uppercase leading-[0.82] tracking-normal"
           >
             <span className="block">{copy.titleFirst}</span>
             <span className="block">
-              {copy.titleSecond}<PageNumber value="04" className="translate-y-2" />
+              {copy.titleSecond}
+              <PageNumber value="04" className="translate-y-2" />
             </span>
-          </motion.h1>
+          </h1>
+        </div>
 
-          <motion.p variants={pageRise} className="mt-7 max-w-md text-sm leading-7 text-white/60 sm:mt-8 sm:text-base lg:text-lg">
-            {copy.intro}
-          </motion.p>
-
-          <motion.div variants={pageContainer} className="mt-10 space-y-4 sm:mt-14 sm:space-y-6">
-            {team.map((member, index) => (
-              <motion.button
-                key={member.name}
-                variants={pageRise}
-                type="button"
-                onClick={() => setActive(index)}
-                className={`group flex w-full min-w-0 cursor-pointer items-center gap-4 text-left transition-all duration-50 sm:gap-5 ${active === index ? 'text-white' : 'text-white/35'
-                  }`}
-              >
-                <span className="shrink-0 text-base font-black text-[#E37D30] sm:text-lg">0{index + 1}</span>
-                <div className="min-w-0">
-                  <h3 className="break-words text-base font-black uppercase tracking-wide sm:text-lg">{member.name}</h3>
-                  <p className="break-words text-[9px] uppercase tracking-[0.16em] sm:text-[10px] sm:tracking-[0.2em]">{member.role}</p>
-                </div>
-              </motion.button>
-            ))}
-          </motion.div>
-        </motion.div>
-
-        <motion.div variants={pageRise} className="relative min-w-0">
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: smoothEase }}
-            className="min-w-0 border border-white/10 bg-black/40 p-5 backdrop-blur-md sm:p-6 lg:p-10"
+        <div className="min-w-0 lg:pb-2">
+          <p
+            style={{ animationDelay: '360ms' }}
+            className="page-rise-entry max-w-xl text-sm leading-7 text-white/65 sm:text-base sm:leading-8 lg:text-lg"
           >
-            <div className="flex min-w-0 flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-              <div className="min-w-0">
-                <span className="text-sm font-black text-[#E37D30]">0{active + 1}</span>
-                <h2 className="mt-2 break-words text-3xl font-black uppercase leading-none sm:text-4xl lg:text-5xl">
-                  {team[active].name}
-                </h2>
-                <p className="mt-3 break-words text-[9px] uppercase tracking-[0.16em] text-white/45 sm:text-[10px] sm:tracking-[0.2em]">
-                  {team[active].role}
-                </p>
-              </div>
+            {copy.intro}
+          </p>
 
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center border border-white/10 bg-white/5 text-xl font-black text-[#E37D30] lg:h-28 lg:w-28 lg:text-3xl">
-                {team[active].name.split(' ').map((part) => part[0]).join('')}
-              </div>
-            </div>
+          <div
+            style={{ animationDelay: '460ms' }}
+            className="page-rise-entry mt-7 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-white/14 pt-4 font-mono text-[9px] uppercase tracking-[0.16em] text-white/42 sm:grid-cols-3"
+          >
+            <span>{copy.founders}</span>
+            <span>{copy.location}</span>
+            <span className="col-span-2 sm:col-span-1">{copy.reach}</span>
+          </div>
+        </div>
+      </section>
 
-            <div className="mt-7 border-t border-white/10 pt-7 sm:mt-8 sm:pt-8">
-              <p className="text-sm leading-7 text-white/65 sm:text-base lg:text-lg">{team[active].bio}</p>
-              <div className="mt-7 flex flex-wrap gap-2 sm:mt-8">
-                {team[active].skills.map((skill) => (
-                  <span key={skill} className="border border-white/10 px-3 py-1.5 text-[9px] uppercase tracking-[0.16em] sm:tracking-[0.2em]">
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </motion.div>
+      <section className="relative z-10 mx-auto max-w-7xl">
+        {team.map((member, index) => {
+          const isInitialPortrait = index === 0;
+          const imageOrder = index % 2 === 0 ? 'lg:order-1' : 'lg:order-2';
+          const contentOrder = index % 2 === 0 ? 'lg:order-2' : 'lg:order-1';
+
+          return (
+            <motion.article
+              key={member.name}
+              variants={isInitialPortrait ? undefined : pageContainer}
+              initial={isInitialPortrait ? undefined : 'hidden'}
+              whileInView={isInitialPortrait ? undefined : 'show'}
+              viewport={isInitialPortrait ? undefined : { once: true, margin: '-12%' }}
+              className="grid border-b border-white/14 lg:grid-cols-2"
+            >
+              <motion.figure
+                variants={isInitialPortrait ? undefined : pageRise}
+                style={isInitialPortrait ? { animationDelay: '560ms' } : undefined}
+                className={`relative aspect-[1296/832] min-w-0 overflow-hidden bg-[#111111] ${isInitialPortrait ? 'page-rise-entry' : ''} ${imageOrder}`}
+              >
+                <Image
+                  src={member.image}
+                  alt={`${copy.portrait} ${member.name}`}
+                  fill
+                  sizes="(max-width: 639px) calc(100vw - 40px), (max-width: 1023px) calc(100vw - 64px), 50vw"
+                  quality={95}
+                  {...(isInitialPortrait
+                    ? { preload: true, fetchPriority: 'high' as const }
+                    : { loading: 'lazy' as const })}
+                  className="object-cover object-center"
+                />
+
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/55 to-transparent lg:hidden" />
+                <span className="absolute bottom-4 left-4 font-mono text-[9px] font-black tracking-[0.18em] text-white/70 lg:hidden">
+                  0{index + 1}
+                </span>
+              </motion.figure>
+
+              <motion.div
+                variants={pageContainer}
+                className={`flex min-w-0 flex-col justify-between px-0 py-8 sm:py-10 lg:min-h-full lg:px-12 lg:py-12 xl:px-16 xl:py-16 ${contentOrder}`}
+              >
+                <motion.div variants={pageRise}>
+                  <div className="flex items-center justify-between gap-6">
+                    <span className="font-mono text-[10px] font-black tracking-[0.18em] text-[#E37D30]">
+                      0{index + 1}
+                    </span>
+                    <span className="text-right text-[9px] font-black uppercase tracking-[0.2em] text-white/38 sm:text-[10px]">
+                      {member.specialty}
+                    </span>
+                  </div>
+
+                  <h2 className="mt-10 max-w-[10ch] text-[clamp(2.6rem,6vw,5.6rem)] font-black uppercase leading-[0.86] tracking-normal">
+                    {member.name}
+                  </h2>
+
+                  <p className="mt-4 text-[10px] font-black uppercase tracking-[0.2em] text-white/45">
+                    {member.role}
+                  </p>
+                </motion.div>
+
+                <motion.div variants={pageRise} className="mt-10 border-t border-white/14 pt-6 lg:mt-16">
+                  <p className="max-w-xl text-sm leading-7 text-white/66 sm:text-base sm:leading-8">
+                    {member.bio}
+                  </p>
+
+                  <div className="mt-7 flex flex-wrap gap-2">
+                    {member.skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="border border-white/14 px-3 py-1.5 text-[9px] uppercase tracking-[0.16em] text-white/58 sm:tracking-[0.2em]"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </motion.div>
+              </motion.div>
+            </motion.article>
+          );
+        })}
+      </section>
+
+      <motion.section
+        variants={pageContainer}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: '-15%' }}
+        className="relative z-10 mx-auto grid max-w-7xl gap-8 border-b border-white/14 py-14 sm:py-20 lg:grid-cols-[0.55fr_1fr] lg:items-end lg:gap-16"
+      >
+        <motion.p
+          variants={pageRise}
+          className="text-[10px] font-black uppercase tracking-[0.3em] text-[#E37D30]"
+        >
+          {copy.closingEyebrow}
+        </motion.p>
+
+        <motion.div variants={pageContainer}>
+          <motion.h2
+            variants={pageRise}
+            className="max-w-[11ch] text-[clamp(2.8rem,7vw,6.5rem)] font-black uppercase leading-[0.84] tracking-normal"
+          >
+            {copy.closingTitle}
+          </motion.h2>
+          <motion.p
+            variants={pageRise}
+            className="mt-6 max-w-2xl text-sm leading-7 text-white/62 sm:text-base sm:leading-8"
+          >
+            {copy.closingText}
+          </motion.p>
         </motion.div>
       </motion.section>
     </motion.main>

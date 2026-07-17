@@ -6,7 +6,7 @@ import Navbar from '@/src/components/Navbar';
 import Footer from '@/src/components/Footer';
 import MidnightCurtain from '@/src/components/MidnightCurtain';
 import ScrollToTopButton from '@/src/components/ScrollToTopButton';
-import ContactModal from '@/src/components/ContactModal';
+import GlobalContactModal from '@/src/components/GlobalContactModal';
 import DocumentLanguage from '@/src/components/DocumentLanguage';
 import {
   INTRO_COOKIE,
@@ -105,7 +105,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Navbar />
           {children}
           <Footer />
-          <ContactModal showTrigger={false} />
+          <GlobalContactModal />
         </div>
         <ScrollToTopButton />
       </body>

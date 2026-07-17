@@ -218,6 +218,26 @@
   animation: midnight-curtain-wipe 1.05s cubic-bezier(0.76, 0, 0.24, 1) 0.25s both;
 }
 
+@keyframes page-rise-entry {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 70px, 0);
+    clip-path: inset(18% 0 0 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.page-rise-entry {
+  opacity: 0;
+  animation: page-rise-entry 0.85s cubic-bezier(0.76, 0, 0.24, 1) both;
+  will-change: transform, opacity, clip-path;
+}
+
 /* Rotating 3D slider */
 
 @keyframes autoRun {

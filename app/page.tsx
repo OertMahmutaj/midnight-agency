@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { preload } from 'react-dom';
 import { useEffect, useRef } from 'react';
 
 import MidnightButton from '@/src/components/MidnightButton';
@@ -34,7 +35,11 @@ const homeCopy = {
   },
 } satisfies Record<Locale, Record<string, string>>;
 
+const HERO_POSTER = '/images/midnight-hero.webp';
+
 export default function HomePage({ locale = 'en' }: { locale?: Locale }) {
+  preload(HERO_POSTER, { as: 'image', fetchPriority: 'high' });
+
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const copy = homeCopy[locale];
 
@@ -127,7 +132,7 @@ export default function HomePage({ locale = 'en' }: { locale?: Locale }) {
             disablePictureInPicture
             disableRemotePlayback
             preload="auto"
-            poster="/images/midnight-hero.png"
+            poster={HERO_POSTER}
             aria-hidden="true"
             className="
               pointer-events-none

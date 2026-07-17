@@ -96,14 +96,14 @@ export default function CaseStudyContent({
 
         <motion.div
           variants={pageRise}
-          className="relative mx-auto mt-10 aspect-[4/5] w-full max-w-[736px] overflow-hidden bg-[#080808] sm:mt-14"
+          className="relative mx-auto mt-10 aspect-[737/921] w-full max-w-[737px] overflow-hidden bg-[#080808] sm:mt-14"
         >
           <Image
             src={work.image}
             alt={`${work.title} ${copy.coverAlt}`}
             fill
             priority
-            sizes="(min-width: 768px) 736px, 100vw"
+            sizes="(min-width: 768px) 737px, 100vw"
             quality={95}
             className="object-cover object-center"
           />
@@ -188,7 +188,7 @@ export default function CaseStudyContent({
               <motion.figure
                 key={image}
                 variants={pageRise}
-                className="relative aspect-[4/5] overflow-hidden bg-[#080808]"
+                className="relative aspect-[737/921] overflow-hidden bg-[#080808]"
               >
                 <Image
                   src={image}

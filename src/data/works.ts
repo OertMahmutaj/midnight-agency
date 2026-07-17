@@ -117,7 +117,7 @@ export const works: WorkItem[] = [
   },
   {
     slug: 'skanderbeg',
-    title: 'Skanderbeg',
+    title: 'Skander beg',
     client: 'Skanderbeg Biofarm',
     year: '2026',
     industry: 'Organic agriculture',

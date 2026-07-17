@@ -6,22 +6,44 @@ import {
   useEffect,
   useState,
 } from 'react';
+import { usePathname } from 'next/navigation';
 
 import ContactForm from '@/src/components/ContactForm';
 import MidnightButton from '@/src/components/MidnightButton';
 import Modal from '@/src/components/Modal';
+import { localeFromPathname, type Locale } from '@/src/lib/i18n';
 
 type ContactModalProps = {
   trigger?: ReactNode;
   triggerLabel?: string;
   showTrigger?: boolean;
+  locale?: Locale;
 };
+
+const modalCopy = {
+  en: {
+    trigger: 'Open Contact Form',
+    title: 'Start A Project',
+    description: 'Tell us what you are building, what you need, or where things feel stuck.',
+    close: 'Close modal',
+  },
+  sq: {
+    trigger: 'Hap Formularin e Kontaktit',
+    title: 'Nis Një Projekt',
+    description: 'Na tregoni çfarë po ndërtoni, çfarë ju nevojitet ose ku mendoni se gjërat kanë ngecur.',
+    close: 'Mbyll dritaren',
+  },
+} satisfies Record<Locale, Record<string, string>>;
 
 export default function ContactModal({
   trigger,
-  triggerLabel = 'Open Contact Form',
+  triggerLabel,
   showTrigger = true,
+  locale,
 }: ContactModalProps) {
+  const pathname = usePathname();
+  const resolvedLocale = locale ?? localeFromPathname(pathname);
+  const copy = modalCopy[resolvedLocale];
   const [isOpen, setIsOpen] = useState(false);
 
   const openModal = useCallback(() => {
@@ -67,7 +89,7 @@ export default function ContactModal({
             onClick={openModal}
             className="max-w-[18rem]"
           >
-            {triggerLabel}
+            {triggerLabel ?? copy.trigger}
           </MidnightButton>
         )
       ) : null}
@@ -78,10 +100,11 @@ export default function ContactModal({
         variant="pokopia"
         logoSrc="/logo/MDNT-ICON-WHITE.png"
         logoAlt="Midnight"
-        title="Start A Project"
-        description="Tell us what you are building, what you need, or where things feel stuck."
+        title={copy.title}
+        description={copy.description}
+        closeLabel={copy.close}
       >
-        <ContactForm tone="light" />
+        <ContactForm tone="light" locale={resolvedLocale} />
       </Modal>
     </>
   );

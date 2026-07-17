@@ -4,22 +4,70 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 // import NavScramble from '@/src/components/NavScramble';
 import WordScrambleText from '@/src/components/WordScrambleText';
+import {
+  alternateLocalePath,
+  localeFromPathname,
+  withLocale,
+  type Locale,
+} from '@/src/lib/i18n';
 
 const menuEase = [0.76, 0, 0.24, 1] as const;
 
-const navLinks = [
-  { label: 'Work', href: '/work' },
-  { label: 'Services', href: '/services' },
-  { label: 'People', href: '/people' },
-  { label: 'Contact', href: '/contact' },
-];
-
-const mobileNavLinks = [{ label: 'Home', href: '/' }, ...navLinks];
+const navCopy = {
+  en: {
+    home: 'Home',
+    links: [
+      { label: 'Work', href: '/work' },
+      { label: 'Services', href: '/services' },
+      { label: 'People', href: '/people' },
+      { label: 'Contact', href: '/contact' },
+    ],
+    open: 'Open menu',
+    close: 'Close menu',
+    location: 'Tirana, Albania',
+    language: 'Switch to Albanian',
+    languageShort: 'AL',
+  },
+  sq: {
+    home: 'Kreu',
+    links: [
+      { label: 'Projektet', href: '/work' },
+      { label: 'Shërbimet', href: '/services' },
+      { label: 'Ekipi', href: '/people' },
+      { label: 'Kontakt', href: '/contact' },
+    ],
+    open: 'Hap menunë',
+    close: 'Mbyll menunë',
+    location: 'Tiranë, Shqipëri',
+    language: 'Kalo në anglisht',
+    languageShort: 'EN',
+  },
+} satisfies Record<Locale, {
+  home: string;
+  links: { label: string; href: string }[];
+  open: string;
+  close: string;
+  location: string;
+  language: string;
+  languageShort: string;
+}>;
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const locale = localeFromPathname(pathname);
+  const copy = navCopy[locale];
+  const navLinks = copy.links.map((link) => ({
+    ...link,
+    href: withLocale(link.href, locale),
+  }));
+  const mobileNavLinks = [
+    { label: copy.home, href: withLocale('/', locale) },
+    ...navLinks,
+  ];
 
   useEffect(() => {
     function closeOnEscape(event: KeyboardEvent) {
@@ -69,7 +117,7 @@ export default function Navbar() {
     >
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between">
         <Link
-          href="/"
+          href={withLocale('/', locale)}
           aria-label="Midnight home"
           onClick={() => setIsOpen(false)}
           className="relative z-[201] inline-flex shrink-0 items-center"
@@ -86,7 +134,7 @@ export default function Navbar() {
 
         <button
           type="button"
-          aria-label={isOpen ? 'Close menu' : 'Open menu'}
+          aria-label={isOpen ? copy.close : copy.open}
           aria-expanded={isOpen}
           aria-controls="mobile-navigation"
           onClick={() => setIsOpen((current) => !current)}
@@ -160,6 +208,13 @@ export default function Navbar() {
               />
             </Link>
           ))}
+          <Link
+            href={alternateLocalePath(pathname)}
+            aria-label={copy.language}
+            className="border-l border-white/20 pl-6 text-[11px] transition-colors hover:text-[#E37D30] lg:pl-8"
+          >
+            {copy.languageShort}
+          </Link>
         </div>
       </div>
 
@@ -175,7 +230,7 @@ export default function Navbar() {
           >
             <button
               type="button"
-              aria-label="Close menu"
+              aria-label={copy.close}
               onClick={() => setIsOpen(false)}
               className="absolute inset-0 cursor-default"
             />
@@ -198,7 +253,7 @@ export default function Navbar() {
                     <Link
                       href={href}
                       onClick={() => setIsOpen(false)}
-                      className="font-k2d flex min-h-[4.75rem] cursor-pointer items-center justify-between gap-5 py-4 text-5xl font-black uppercase leading-none tracking-normal transition-colors hover:text-[#E37D30] sm:min-h-[5.75rem] sm:text-6xl"
+                      className="font-k2d flex min-h-[4.75rem] cursor-pointer items-center justify-between gap-5 py-4 text-[clamp(2.35rem,11vw,3rem)] font-black uppercase leading-none tracking-normal transition-colors hover:text-[#E37D30] sm:min-h-[5.75rem] sm:text-6xl"
                     >
                       <span>{label}</span>
                       <span className="text-[10px] font-black tracking-[0.18em] text-white/38">
@@ -220,7 +275,30 @@ export default function Navbar() {
                   className="flex items-center justify-between gap-5 pt-6 text-[9px] uppercase tracking-[0.18em] text-white/38"
                 >
                   <span>Midnight Agency</span>
-                  <span>Tirana, Albania</span>
+                  <span>{copy.location}</span>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{
+                    delay: 0.12 + mobileNavLinks.length * 0.055,
+                    duration: 0.4,
+                    ease: menuEase,
+                  }}
+                  className="mt-6 border-t border-white/35 pt-5"
+                >
+                  <Link
+                    href={alternateLocalePath(pathname)}
+                    aria-label={copy.language}
+                    onClick={() => setIsOpen(false)}
+                    className="inline-flex items-center gap-3 text-sm font-black uppercase tracking-[0.16em] transition-colors hover:text-[#E37D30]"
+                  >
+                    <span>{locale === 'en' ? 'English' : 'Shqip'}</span>
+                    <span className="text-[#E37D30]">/</span>
+                    <span>{copy.languageShort}</span>
+                  </Link>
                 </motion.div>
               </div>
             </div>

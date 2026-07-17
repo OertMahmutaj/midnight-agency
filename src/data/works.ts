@@ -1,3 +1,5 @@
+import type { Locale } from '@/src/lib/i18n';
+
 export type WorkItem = {
   slug: string;
   title: string;
@@ -92,6 +94,81 @@ export const works: WorkItem[] = [
   },
 ];
 
-export function getWorkBySlug(slug: string) {
-  return works.find((work) => work.slug === slug);
+export const worksSq: WorkItem[] = [
+  {
+    slug: 'creative-cult',
+    title: 'Creativ Cult',
+    client: 'Creativ Cult',
+    year: '2026',
+    industry: 'Agjenci kreative',
+    services: ['Implementim marke', 'Sisteme vizuale', 'Dizajn digjital'],
+    summary:
+      'Një agjenci dinamike marketingu dhe kreative, e fokusuar te komunikimi i guximshëm dhe strategjitë jokonvencionale të markës.',
+    challenge:
+      'Agjencia kishte një logo bazë, por i mungonte një gjuhë vizuale e unifikuar që ta mbështeste. Sfida ishte ta kthenim shenjën ekzistuese në një ekosistem të plotë marke, duke përkthyer filozofinë Cult në një sistem vizual rigoroz, të shkallëzueshëm dhe me ndikim të lartë për mjedise korporative dhe digjitale.',
+    solution:
+      'Zhvilluam një sistem të plotë identiteti të bazuar në një rrjet të rreptë gjeometrik, duke nxjerrë motive grafike dhe struktura faqosjeje drejtpërdrejt nga këndet e logos. Hierarkia tipografike me kontrast të lartë dhe gjuha modulare e dizajnit e bëjnë çdo pikë kontakti të ndihet si vazhdim natyral i ADN-së së markës, duke balancuar energjinë kreative me autoritetin profesional.',
+    deliverables: [
+      'Dizajn faqeje web',
+      'Broshurë trefishe',
+      'Kartëvizita',
+      'Modele për Instagram',
+    ],
+    image: '/work/creative-cult/01.png',
+    gallery: numberedImages('creative-cult', 2, 6),
+  },
+  {
+    slug: 'optimus-pharma',
+    title: 'Optimus Pharma',
+    client: 'Optimus Pharma',
+    year: '2026',
+    industry: 'Shpërndarje farmaceutike',
+    services: ['Strategji marke', 'Ridizajnim identiteti', 'Paketim'],
+    summary:
+      'Një distributor farmaceutik lider në Tiranë, i specializuar në tregtinë me shumicë dhe logjistikën e produkteve mjekësore.',
+    challenge:
+      'Identiteti ekzistues ishte vjetruar dhe nuk komunikonte më rritjen apo evoluimin profesional të kompanisë. Objektivi ishte një ridizajnim i plotë i markës që të përcillte autoritet, besueshmëri dhe standarde moderne në çdo pikë kontakti, si në print ashtu edhe në digjital.',
+    solution:
+      'Zhvilluam një shenjë minimaliste që bashkon inicialin O me një ikonë të stilizuar kapsule, duke krijuar një simbol koherent dhe të dallueshëm të precizionit. Bluja e thellë dhe tonaliteti i freskët teal mbështesin identitetin, duke komunikuar besim, standard klinik dhe inovacion.',
+    deliverables: [
+      'Identitet dhe strategji marke',
+      'Udhëzues i markës',
+      'Materiale korporative',
+      'Materiale promocionale',
+      'Paketim',
+      'Sistem dizajni për rrjetet sociale',
+    ],
+    image: '/work/optimus-pharma/01.png',
+    gallery: numberedImages('optimus-pharma', 2, 8),
+  },
+  {
+    slug: 'vp-consulting',
+    title: 'VP Consulting',
+    client: 'VP Consulting',
+    year: '2026',
+    industry: 'Konsulencë biznesi',
+    services: ['Dizajn logoje', 'Identitet marke', 'Dizajn korporativ'],
+    summary:
+      'Një firmë këshillimi strategjik që ofron zgjidhje biznesi, planifikim financiar dhe konsulencë menaxheriale për klientë korporativë.',
+    challenge:
+      'Identiteti i mëparshëm dukej i përgjithshëm dhe i mungonte karakteri ekzekutiv i nevojshëm për të ndërtuar besim me klientë me profil të lartë. Sfida ishte të krijonim një monogram që të ndihej i përjetshëm, autoritar dhe i qëndrueshëm, duke mbetur i përshtatshëm për një biznes me fokus digjital.',
+    solution:
+      'Projektuam një monogram elegant duke ndërthurur shkronjat V dhe P brenda një rrethi perfekt, si simbol i mbështetjes së plotë dhe konsulencës 360 gradë. Ndërtimi gjeometrik mbetet i qartë në çdo madhësi, ndërsa e verdha e gjallë mbi paletën e errët bashkon optimizmin strategjik me seriozitetin profesional.',
+    deliverables: [
+      'Identitet ekzekutiv i markës',
+      'Dizajn monogrami',
+      'Materiale korporative',
+      'Udhëzues i stilit vizual',
+    ],
+    image: '/work/vp-consulting/01.png',
+    gallery: numberedImages('vp-consulting', 2, 6),
+  },
+];
+
+export function getWorks(locale: Locale = 'en') {
+  return locale === 'sq' ? worksSq : works;
+}
+
+export function getWorkBySlug(slug: string, locale: Locale = 'en') {
+  return getWorks(locale).find((work) => work.slug === slug);
 }

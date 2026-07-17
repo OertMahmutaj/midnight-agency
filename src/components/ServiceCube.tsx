@@ -4,8 +4,9 @@ import { useFrame } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import { Mesh } from 'three';
 import { useTexture } from '@react-three/drei';
+import type { Locale } from '@/src/lib/i18n';
 
-export default function ServiceCube() {
+export default function ServiceCube({ locale = 'en' }: { locale?: Locale }) {
     const meshRef = useRef<Mesh>(null!);
     const grainTexture = useTexture('/images.jpg');
 
@@ -41,7 +42,9 @@ export default function ServiceCube() {
             <Text {...textProps} position={[0, 0, -1.56]} rotation={[0, Math.PI, 0]}>BRANDING</Text>
 
             {/* Face 4: Left */}
-            <Text {...textProps} position={[-1.56, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>DESIGN</Text>
+            <Text {...textProps} position={[-1.56, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
+                {locale === 'sq' ? 'DIZAJN' : 'DESIGN'}
+            </Text>
         </mesh>
     );
 }

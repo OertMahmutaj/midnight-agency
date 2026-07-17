@@ -4,15 +4,37 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { FormEvent, useState } from 'react';
 import MidnightButton from '@/src/components/MidnightButton';
 import { smoothEase } from '@/src/lib/pageMotion';
+import type { Locale } from '@/src/lib/i18n';
 
 type ContactFormProps = {
   onSuccess?: () => void;
   tone?: 'dark' | 'light';
+  locale?: Locale;
 };
 
-export default function ContactForm({ onSuccess, tone = 'dark' }: ContactFormProps) {
+const formCopy = {
+  en: {
+    name: 'Your Name',
+    email: 'Your Email',
+    message: 'Share your thoughts',
+    sending: 'Sending',
+    submit: 'Contact Us',
+    thanks: 'Thank you for contacting us, we will get back to you as soon as possible.',
+  },
+  sq: {
+    name: 'Emri Juaj',
+    email: 'Email-i Juaj',
+    message: 'Ndani mendimin tuaj',
+    sending: 'Po Dërgohet',
+    submit: 'Na Kontakto',
+    thanks: 'Faleminderit që na kontaktuat. Do t’ju përgjigjemi sa më shpejt të jetë e mundur.',
+  },
+} satisfies Record<Locale, Record<string, string>>;
+
+export default function ContactForm({ onSuccess, tone = 'dark', locale = 'en' }: ContactFormProps) {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const copy = formCopy[locale];
   const fieldClass =
     tone === 'light'
       ? 'min-w-0 w-full border-0 border-b border-black/35 bg-transparent px-0 py-3 text-sm text-black outline-none transition-colors placeholder:text-black/45 focus:border-[#E37D30]'
@@ -61,7 +83,7 @@ export default function ContactForm({ onSuccess, tone = 'dark' }: ContactFormPro
             name="name"
             type="text"
             autoComplete="off"
-            placeholder="Your Name"
+            placeholder={copy.name}
             required
             className={fieldClass}
           />
@@ -70,7 +92,7 @@ export default function ContactForm({ onSuccess, tone = 'dark' }: ContactFormPro
             name="email"
             type="email"
             autoComplete="off"
-            placeholder="Your Email"
+            placeholder={copy.email}
             required
             className={fieldClass}
           />
@@ -79,7 +101,7 @@ export default function ContactForm({ onSuccess, tone = 'dark' }: ContactFormPro
             name="message"
             rows={3}
             autoComplete="off"
-            placeholder="Share your thoughts"
+            placeholder={copy.message}
             required
             className={`${fieldClass} resize-none`}
           />
@@ -89,7 +111,7 @@ export default function ContactForm({ onSuccess, tone = 'dark' }: ContactFormPro
               disabled={isSubmitting}
               type="submit"
             >
-              {isSubmitting ? 'Sending' : 'Contact Us'}
+              {isSubmitting ? copy.sending : copy.submit}
             </MidnightButton>
           </div>
         </motion.form>
@@ -102,7 +124,7 @@ export default function ContactForm({ onSuccess, tone = 'dark' }: ContactFormPro
           className={successClass}
         >
           <h3 className="text-xl font-black uppercase tracking-widest">
-            Thank you for contacting us, we will get back to you as soon as possible.
+            {copy.thanks}
           </h3>
         </motion.div>
       )}

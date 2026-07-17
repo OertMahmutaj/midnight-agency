@@ -4,9 +4,47 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import type { WorkItem } from '@/src/data/works';
+import { withLocale, type Locale } from '@/src/lib/i18n';
 import { pageContainer, pageRise } from '@/src/lib/pageMotion';
 
-export default function CaseStudyContent({ work }: { work: WorkItem }) {
+const caseStudyCopy = {
+  en: {
+    back: 'Back to work',
+    industry: 'Industry',
+    services: 'Services',
+    challenge: 'The challenge',
+    solution: 'The solution',
+    deliverables: 'Deliverables',
+    deliverablesTitle: 'Built to work everywhere.',
+    gallery: 'Project gallery',
+    images: 'images',
+    coverAlt: 'case study cover',
+    imageAlt: 'case study image',
+  },
+  sq: {
+    back: 'Kthehu te projektet',
+    industry: 'Industria',
+    services: 'Shërbimet',
+    challenge: 'Sfida',
+    solution: 'Zgjidhja',
+    deliverables: 'Materialet',
+    deliverablesTitle: 'Ndërtuar për të funksionuar kudo.',
+    gallery: 'Galeria e projektit',
+    images: 'imazhe',
+    coverAlt: 'kopertina e studimit të rastit',
+    imageAlt: 'imazh i studimit të rastit',
+  },
+} satisfies Record<Locale, Record<string, string>>;
+
+export default function CaseStudyContent({
+  work,
+  locale = 'en',
+}: {
+  work: WorkItem;
+  locale?: Locale;
+}) {
+  const copy = caseStudyCopy[locale];
+
   return (
     <motion.main
       variants={pageContainer}
@@ -16,8 +54,8 @@ export default function CaseStudyContent({ work }: { work: WorkItem }) {
     >
       <motion.article variants={pageContainer} className="mx-auto max-w-7xl">
         <motion.div variants={pageRise}>
-          <Link href="/work" className="mb-8 inline-flex text-[10px] font-black uppercase tracking-[0.24em] text-white/50 transition-colors hover:text-[#E37D30] sm:mb-10 sm:tracking-[0.28em]">
-            Back to work
+          <Link href={withLocale('/work', locale)} className="mb-8 inline-flex text-[10px] font-black uppercase tracking-[0.24em] text-white/50 transition-colors hover:text-[#E37D30] sm:mb-10 sm:tracking-[0.28em]">
+            {copy.back}
           </Link>
         </motion.div>
 
@@ -45,11 +83,11 @@ export default function CaseStudyContent({ work }: { work: WorkItem }) {
 
             <motion.dl variants={pageRise} className="grid gap-4 text-sm text-white/62 sm:grid-cols-2">
               <div className="min-w-0">
-                <dt className="mb-2 text-[10px] font-black uppercase tracking-[0.24em] text-white/35">Industry</dt>
+                <dt className="mb-2 text-[10px] font-black uppercase tracking-[0.24em] text-white/35">{copy.industry}</dt>
                 <dd className="break-words">{work.industry}</dd>
               </div>
               <div className="min-w-0">
-                <dt className="mb-2 text-[10px] font-black uppercase tracking-[0.24em] text-white/35">Services</dt>
+                <dt className="mb-2 text-[10px] font-black uppercase tracking-[0.24em] text-white/35">{copy.services}</dt>
                 <dd className="break-words">{work.services.join(', ')}</dd>
               </div>
             </motion.dl>
@@ -62,7 +100,7 @@ export default function CaseStudyContent({ work }: { work: WorkItem }) {
         >
           <Image
             src={work.image}
-            alt={`${work.title} case study cover`}
+            alt={`${work.title} ${copy.coverAlt}`}
             fill
             priority
             sizes="(min-width: 768px) 736px, 100vw"
@@ -80,7 +118,7 @@ export default function CaseStudyContent({ work }: { work: WorkItem }) {
             className="border-b border-white/12 py-10 lg:border-b-0 lg:border-r lg:py-14 lg:pr-14"
           >
             <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#E37D30]">
-              The challenge
+              {copy.challenge}
             </p>
             <p className="mt-6 max-w-xl text-base leading-8 text-white/65 sm:text-lg">
               {work.challenge}
@@ -92,7 +130,7 @@ export default function CaseStudyContent({ work }: { work: WorkItem }) {
             className="py-10 lg:py-14 lg:pl-14"
           >
             <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#E37D30]">
-              The solution
+              {copy.solution}
             </p>
             <p className="mt-6 max-w-xl text-base leading-8 text-white/65 sm:text-lg">
               {work.solution}
@@ -106,10 +144,10 @@ export default function CaseStudyContent({ work }: { work: WorkItem }) {
         >
           <motion.div variants={pageRise}>
             <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#E37D30]">
-              Deliverables
+              {copy.deliverables}
             </p>
             <h2 className="mt-4 text-3xl font-black uppercase leading-none tracking-normal sm:text-4xl">
-              Built to work everywhere.
+              {copy.deliverablesTitle}
             </h2>
           </motion.div>
 
@@ -135,10 +173,10 @@ export default function CaseStudyContent({ work }: { work: WorkItem }) {
             className="mb-8 flex items-end justify-between border-b border-white/12 pb-5"
           >
             <h2 className="text-3xl font-black uppercase leading-none tracking-normal sm:text-5xl">
-              Project gallery
+              {copy.gallery}
             </h2>
             <p className="font-mono text-[10px] uppercase text-white/35">
-              {String(work.gallery.length + 1).padStart(2, '0')} images
+              {String(work.gallery.length + 1).padStart(2, '0')} {copy.images}
             </p>
           </motion.header>
 
@@ -154,7 +192,7 @@ export default function CaseStudyContent({ work }: { work: WorkItem }) {
               >
                 <Image
                   src={image}
-                  alt={`${work.title} case study image ${index + 2}`}
+                  alt={`${work.title} ${copy.imageAlt} ${index + 2}`}
                   fill
                   sizes="(min-width: 768px) 50vw, 100vw"
                   quality={95}

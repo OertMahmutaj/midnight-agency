@@ -10,6 +10,7 @@ import {
     type PointerEvent as ReactPointerEvent,
 } from 'react';
 import { useRouter } from 'next/navigation';
+import { withLocale, type Locale } from '@/src/lib/i18n';
 
 type Command = {
     value: string;
@@ -21,9 +22,11 @@ type Command = {
 
 type CrtCommandInputProps = {
     variant?: 'screen' | 'mobile';
+    locale?: Locale;
 };
 
-const commands: Command[] = [
+const commandsByLocale: Record<Locale, Command[]> = {
+  en: [
     // {
     //     value: 'home',
     //     label: 'Home',
@@ -54,12 +57,73 @@ const commands: Command[] = [
         description: 'Open contact menu',
         action: 'contact',
     },
-];
+  ],
+  sq: [
+    {
+      value: 'projektet',
+      label: 'Projektet',
+      description: 'Shiko projektet e përzgjedhura',
+      href: '/work',
+    },
+    {
+      value: 'sherbimet',
+      label: 'Shërbimet',
+      description: 'Eksploro shërbimet tona',
+      href: '/services',
+    },
+    {
+      value: 'ekipi',
+      label: 'Ekipi',
+      description: 'Njihuni me studion',
+      href: '/people',
+    },
+    {
+      value: 'kontakt',
+      label: 'Kontakt',
+      description: 'Hap formularin e kontaktit',
+      action: 'contact',
+    },
+  ],
+};
+
+const terminalCopy = {
+  en: {
+    unknown: 'UNKNOWN COMMAND',
+    opening: 'OPENING',
+    contact: 'Opening contact form...',
+    desktopPlaceholder: 'PRESS CTRL TO TYPE',
+    mobilePlaceholder: 'TAP TO TYPE',
+    applicationLabel: 'Midnight navigation terminal',
+    inputLabel: 'Type a Midnight navigation command',
+    help: 'TAB COMPLETE · ENTER OPEN',
+    noMatch: 'NO MATCH',
+  },
+  sq: {
+    unknown: 'KOMANDË E PANJOHUR',
+    opening: 'DUKE HAPUR',
+    contact: 'Duke hapur formularin e kontaktit...',
+    desktopPlaceholder: 'SHTYP CTRL PËR TË SHKRUAR',
+    mobilePlaceholder: 'PREK PËR TË SHKRUAR',
+    applicationLabel: 'Terminali i navigimit Midnight',
+    inputLabel: 'Shkruaj një komandë navigimi Midnight',
+    help: 'TAB PLOTËSO · ENTER HAP',
+    noMatch: 'NUK U GJET',
+  },
+} satisfies Record<Locale, Record<string, string>>;
 
 export default function CrtCommandInput({
     variant = 'screen',
+    locale = 'en',
 }: CrtCommandInputProps) {
     const router = useRouter();
+    const copy = terminalCopy[locale];
+    const commands = useMemo(
+      () => commandsByLocale[locale].map((command) => ({
+        ...command,
+        href: command.href ? withLocale(command.href, locale) : undefined,
+      })),
+      [locale],
+    );
 
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -106,7 +170,7 @@ export default function CrtCommandInput({
                 commandLabel.includes(normalizedValue)
             );
         });
-    }, [normalizedValue]);
+    }, [commands, normalizedValue]);
 
     const safeActiveIndex = Math.min(
         activeIndex,
@@ -260,18 +324,18 @@ export default function CrtCommandInput({
         }
 
         if (!selectedCommand) {
-            setMessage('UNKNOWN COMMAND');
+            setMessage(copy.unknown);
             return;
         }
 
         setValue(selectedCommand.value);
         setActiveIndex(0);
         setMessage(
-            `OPENING ${selectedCommand.label}...`,
+            `${copy.opening} ${selectedCommand.label}...`,
         );
 
         if (selectedCommand.action === 'contact') {
-            setMessage('Opening contact form...');
+            setMessage(copy.contact);
 
             window.dispatchEvent(
                 new CustomEvent('midnight:open-contact'),
@@ -363,13 +427,13 @@ export default function CrtCommandInput({
     }
 
     const placeholder = isScreen
-        ? 'PRESS CTRL TO TYPE'
-        : 'TAP TO TYPE';
+        ? copy.desktopPlaceholder
+        : copy.mobilePlaceholder;
 
     return (
         <div
             role="application"
-            aria-label="Midnight navigation terminal"
+            aria-label={copy.applicationLabel}
             className={
                 isScreen
                     ? 'relative h-full w-full'
@@ -501,7 +565,7 @@ export default function CrtCommandInput({
                             autoCapitalize="none"
                             spellCheck={false}
                             style={{ fontSize: isScreen ? undefined : '16px' }}
-                            aria-label="Type a Midnight navigation command"
+                            aria-label={copy.inputLabel}
                             className="
                 absolute
                 inset-0
@@ -533,7 +597,7 @@ export default function CrtCommandInput({
               text-[#65c9c4]/35
             "
                     >
-                        TAB COMPLETE · ENTER OPEN
+                        {copy.help}
                     </p>
                 ) : null}
 
@@ -688,7 +752,7 @@ export default function CrtCommandInput({
                     })
                 ) : (
                     <div className="px-[0.45em] py-[0.4em] text-[#d27658]">
-                        NO MATCH
+                        {copy.noMatch}
                     </div>
                 )}
             </div>

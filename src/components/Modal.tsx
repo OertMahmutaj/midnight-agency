@@ -17,6 +17,7 @@ type ModalProps = {
   variant?: 'default' | 'pokopia';
   logoSrc?: string;
   logoAlt?: string;
+  closeLabel?: string;
 };
 
 export default function Modal({
@@ -29,6 +30,7 @@ export default function Modal({
   variant = 'default',
   logoSrc,
   logoAlt = 'Logo',
+  closeLabel = 'Close modal',
 }: ModalProps) {
   useEffect(() => {
     if (!open) return;
@@ -63,7 +65,7 @@ export default function Modal({
           transition={{ duration: 0.22 }}
         >
           <motion.button
-            aria-label="Close modal"
+            aria-label={closeLabel}
             className="fixed inset-0 cursor-pointer bg-black/70 backdrop-blur-[1px]"
             type="button"
             onClick={onClose}
@@ -97,7 +99,7 @@ export default function Modal({
 
                 <button
                   type="button"
-                  aria-label="Close modal"
+                  aria-label={closeLabel}
                   onClick={onClose}
                   className="absolute right-3 top-3 z-40 grid h-10 w-10 cursor-pointer place-items-center rounded-full bg-black text-white transition-colors hover:bg-[#E37D30] sm:right-4 sm:top-4"
                 >
@@ -154,7 +156,7 @@ export default function Modal({
 
                 <button
                   type="button"
-                  aria-label="Close modal"
+                  aria-label={closeLabel}
                   onClick={onClose}
                   className="absolute right-3 top-3 z-20 grid h-11 w-11 cursor-pointer place-items-center text-white/60 transition-colors hover:text-white sm:right-5 sm:top-5"
                 >

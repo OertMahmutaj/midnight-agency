@@ -9,8 +9,17 @@ import {
   headingRise,
   smoothEase,
 } from '@/src/lib/pageMotion';
+import type { Locale } from '@/src/lib/i18n';
 
-const team = [
+type TeamMember = {
+  name: string;
+  role: string;
+  bio: string;
+  skills: string[];
+};
+
+const teamByLocale: Record<Locale, TeamMember[]> = {
+  en: [
   {
     name: 'Oert Mahmutaj',
     role: 'Co-Founder & Lead Developer',
@@ -23,10 +32,42 @@ const team = [
     bio: 'Creative strategist focused on branding, identity systems, motion and digital experiences that feel premium and memorable.',
     skills: ['Branding', 'UI', 'Motion', 'Identity', 'Art Direction'],
   },
-];
+  ],
+  sq: [
+    {
+      name: 'Oert Mahmutaj',
+      role: 'Bashkëthemelues & Lead Developer',
+      bio: 'Zhvillues analitik me formim në Fizikë dhe Informatikë Ekonomike. I fokusuar te arkitektura e shkallëzueshme, automatizimi dhe eksperiencat web me performancë të lartë.',
+      skills: ['Next.js', 'React', 'MERN', 'Python', 'AI'],
+    },
+    {
+      name: 'Albano Jasharaj',
+      role: 'Bashkëthemelues & Drejtor Kreativ',
+      bio: 'Strateg kreativ i fokusuar te branding-u, sistemet e identitetit, motion dhe eksperiencat digjitale që ndihen premium dhe mbahen mend.',
+      skills: ['Branding', 'UI', 'Motion', 'Identitet', 'Drejtim Artistik'],
+    },
+  ],
+};
 
-export default function PeoplePage() {
+const peopleCopy = {
+  en: {
+    eyebrow: 'About Us',
+    titleFirst: 'The',
+    titleSecond: 'People',
+    intro: 'Midnight Coffee is built by two founders combining engineering, branding and digital strategy to create products that stand out.',
+  },
+  sq: {
+    eyebrow: 'Rreth Nesh',
+    titleFirst: 'Ekipi',
+    titleSecond: 'Midnight',
+    intro: 'Midnight është ndërtuar nga dy themelues që bashkojnë inxhinierinë, branding-un dhe strategjinë digjitale për të krijuar produkte që bien në sy.',
+  },
+} satisfies Record<Locale, Record<string, string>>;
+
+export default function PeoplePage({ locale = 'en' }: { locale?: Locale }) {
   const [active, setActive] = useState(0);
+  const team = teamByLocale[locale];
+  const copy = peopleCopy[locale];
 
   return (
     <motion.main
@@ -41,21 +82,21 @@ export default function PeoplePage() {
       >
         <motion.div variants={pageContainer} className="min-w-0 lg:sticky lg:top-32 lg:self-start">
           <motion.p variants={pageRise} className="mb-5 text-[10px] font-black uppercase tracking-[0.35em] text-[#E37D30] sm:text-xs">
-            About Us
+            {copy.eyebrow}
           </motion.p>
 
           <motion.h1
             variants={headingRise}
             className="w-fit max-w-full pb-[0.08em] pr-[0.08em] text-[clamp(3rem,9vw,8rem)] font-black uppercase leading-[0.84] tracking-[-0.04em]"
           >
-            <span className="block">The</span>
+            <span className="block">{copy.titleFirst}</span>
             <span className="block">
-              People<PageNumber value="04" className="translate-y-2" />
+              {copy.titleSecond}<PageNumber value="04" className="translate-y-2" />
             </span>
           </motion.h1>
 
           <motion.p variants={pageRise} className="mt-7 max-w-md text-sm leading-7 text-white/60 sm:mt-8 sm:text-base lg:text-lg">
-            Midnight Coffee is built by two founders combining engineering, branding and digital strategy to create products that stand out.
+            {copy.intro}
           </motion.p>
 
           <motion.div variants={pageContainer} className="mt-10 space-y-4 sm:mt-14 sm:space-y-6">

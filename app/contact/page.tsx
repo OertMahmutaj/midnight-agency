@@ -12,8 +12,9 @@ import {
   pageRise,
   headingRise,
 } from '@/src/lib/pageMotion';
+import type { Locale } from '@/src/lib/i18n';
 
-function ContactCube() {
+function ContactCube({ locale }: { locale: Locale }) {
   const meshRef = useRef<Mesh>(null!);
   const grainTexture = useTexture('/images.jpg');
 
@@ -29,20 +30,44 @@ function ContactCube() {
     anchorY: 'middle' as const,
     font: '/fonts/GeistMono-Black.ttf',
   };
+  const labels = locale === 'sq'
+    ? ['NA', 'KON', 'TAKTO', 'TUNG']
+    : ['GET', 'IN', 'TOUCH', 'HELLO'];
 
   return (
     <mesh ref={meshRef} rotation={[-0.35, 0.35, 0]}>
       <boxGeometry args={[2.65, 2.65, 2.65]} />
       <meshStandardMaterial color="#b94502" map={grainTexture} roughness={0.82} metalness={0.08} />
-      <Text {...textProps} position={[0, 0, 1.34]}>GET</Text>
-      <Text {...textProps} position={[1.34, 0, 0]} rotation={[0, Math.PI / 2, 0]}>IN</Text>
-      <Text {...textProps} position={[0, 0, -1.34]} rotation={[0, Math.PI, 0]}>TOUCH</Text>
-      <Text {...textProps} position={[-1.34, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>HELLO</Text>
+      <Text {...textProps} position={[0, 0, 1.34]}>{labels[0]}</Text>
+      <Text {...textProps} position={[1.34, 0, 0]} rotation={[0, Math.PI / 2, 0]}>{labels[1]}</Text>
+      <Text {...textProps} position={[0, 0, -1.34]} rotation={[0, Math.PI, 0]}>{labels[2]}</Text>
+      <Text {...textProps} position={[-1.34, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>{labels[3]}</Text>
     </mesh>
   );
 }
 
-export default function ContactPage() {
+const contactCopy = {
+  en: {
+    eyebrow: 'Contact',
+    titleFirst: 'Get In',
+    titleSecond: 'Touch',
+    intro: 'Tell us what you are building, what needs to move faster, or what needs a sharper first impression.',
+    cta: 'Contact Us',
+    aside: 'It is very important for us to keep in touch with you, so we are always ready to answer any question that interests you. Shoot.',
+  },
+  sq: {
+    eyebrow: 'Kontakt',
+    titleFirst: 'Na',
+    titleSecond: 'Kontakto',
+    intro: 'Na tregoni çfarë po ndërtoni, çfarë duhet të ecë më shpejt ose çfarë ka nevojë për një përshtypje të parë më të fortë.',
+    cta: 'Na Kontakto',
+    aside: 'Për ne është shumë e rëndësishme të qëndrojmë në kontakt me ju, ndaj jemi gjithmonë gati t’i përgjigjemi çdo pyetjeje që ju intereson. Flisni me ne.',
+  },
+} satisfies Record<Locale, Record<string, string>>;
+
+export default function ContactPage({ locale = 'en' }: { locale?: Locale }) {
+  const copy = contactCopy[locale];
+
   return (
     <motion.main
       variants={pageContainer}
@@ -61,25 +86,25 @@ export default function ContactPage() {
       >
         <motion.div variants={pageContainer} className="grid min-w-0 content-center justify-items-start">
           <motion.p variants={pageRise} className="mb-5 text-[10px] font-black uppercase tracking-[0.35em] text-[#E37D30] sm:text-xs">
-            Contact
+            {copy.eyebrow}
           </motion.p>
 
           <motion.h1
             variants={headingRise}
             className="w-fit max-w-full pb-[0.12em] pr-[0.08em] text-[clamp(3rem,9vw,7.5rem)] font-black uppercase leading-[0.84] tracking-[-0.04em]"
           >
-            <span className="block">Get In</span>
+            <span className="block">{copy.titleFirst}</span>
             <span className="block">
-              Touch<PageNumber value="05" />
+              {copy.titleSecond}<PageNumber value="05" />
             </span>
           </motion.h1>
 
           <motion.p variants={pageRise} className="mt-7 max-w-xl text-sm leading-7 text-white/62 sm:mt-8 sm:text-base md:text-lg">
-            Tell us what you are building, what needs to move faster, or what needs a sharper first impression.
+            {copy.intro}
           </motion.p>
 
           <motion.div variants={pageRise} className="mt-8 w-full max-w-[19rem] overflow-visible px-2 py-2 sm:mt-10 sm:px-0">
-            <ContactModal triggerLabel="Contact Us" />
+            <ContactModal triggerLabel={copy.cta} locale={locale} />
           </motion.div>
         </motion.div>
 
@@ -93,7 +118,7 @@ export default function ContactPage() {
               <ambientLight intensity={0.55} />
               <directionalLight position={[6, 6, 5]} intensity={1.2} />
               <Suspense fallback={null}>
-                <ContactCube />
+                <ContactCube locale={locale} />
                 <Environment files="/hdr/potsdamer_platz_1k.hdr" />
                 <OrbitControls enableZoom={false} enablePan={false} />
               </Suspense>
@@ -101,7 +126,7 @@ export default function ContactPage() {
           </motion.div>
 
           <motion.p variants={pageRise} className="relative z-10 mx-auto mt-3 w-full max-w-[22rem] text-center text-sm leading-7 text-white/72 lg:-mt-8 lg:ml-[22%] lg:mr-0 lg:text-left">
-            It is very important for us to keep in touch with you, so we are always ready to answer any question that interests you. Shoot.
+            {copy.aside}
           </motion.p>
         </motion.div>
       </motion.section>

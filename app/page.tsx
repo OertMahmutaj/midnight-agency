@@ -11,9 +11,32 @@ import {
   pageRise,
 } from '@/src/lib/pageMotion';
 import { INTRO_COMPLETE_EVENT } from '@/src/lib/introCookie';
+import { withLocale, type Locale } from '@/src/lib/i18n';
 
-export default function HomePage() {
+const homeCopy = {
+  en: {
+    lead: 'The road to',
+    success: 'SUCCESS',
+    successHover: 'GREATNESS',
+    bridge: 'starts with being',
+    bold: 'BOLD',
+    boldHover: 'BRAVE',
+    cta: 'View Our Work',
+  },
+  sq: {
+    lead: 'Rruga drejt',
+    success: 'SUKSESIT',
+    successHover: 'ARRITJES',
+    bridge: 'fillon duke qenë',
+    bold: 'GUXIMTAR',
+    boldHover: 'TRIM',
+    cta: 'Shiko Projektet',
+  },
+} satisfies Record<Locale, Record<string, string>>;
+
+export default function HomePage({ locale = 'en' }: { locale?: Locale }) {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const copy = homeCopy[locale];
 
   useEffect(() => {
     const video = heroVideoRef.current;
@@ -138,7 +161,7 @@ export default function HomePage() {
               min-[1100px]:block
             "
           >
-            <CrtCommandInput variant="screen" />
+            <CrtCommandInput variant="screen" locale={locale} />
           </div>
         </div>
       </div>
@@ -200,16 +223,16 @@ export default function HomePage() {
               sm:leading-[0.86]
             "
           >
-            The road to{' '}
+            {copy.lead}{' '}
             <WordScrambleText
-              value="SUCCESS"
-              hoverValue="GREATNESS"
+              value={copy.success}
+              hoverValue={copy.successHover}
               className="inline-grid cursor-pointer normal-case text-[#E37D30]"
             />{' '}
-            starts with being{' '}
+            {copy.bridge}{' '}
             <WordScrambleText
-              value="BOLD"
-              hoverValue="BRAVE"
+              value={copy.bold}
+              hoverValue={copy.boldHover}
               className="inline-grid cursor-pointer normal-case text-[#E37D30]"
             />
           </motion.h1>
@@ -227,8 +250,8 @@ export default function HomePage() {
               sm:px-0
             "
           >
-            <MidnightButton href="/work">
-              View Our Work
+            <MidnightButton href={withLocale('/work', locale)}>
+              {copy.cta}
             </MidnightButton>
           </motion.div>
 
@@ -237,7 +260,7 @@ export default function HomePage() {
             variants={pageRise}
             className="mt-8 min-[1100px]:hidden"
           >
-            <CrtCommandInput variant="mobile" />
+            <CrtCommandInput variant="mobile" locale={locale} />
           </motion.div>
         </motion.div>
       </motion.div>

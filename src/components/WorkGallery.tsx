@@ -24,7 +24,8 @@ import {
 
 import WordScrambleText from '@/src/components/WordScrambleText';
 import PageNumber from '@/src/components/PageNumber';
-import { works, type WorkItem } from '@/src/data/works';
+import { getWorks, type WorkItem } from '@/src/data/works';
+import { withLocale, type Locale } from '@/src/lib/i18n';
 import { pageContainer, pageRise } from '@/src/lib/pageMotion';
 
 
@@ -73,11 +74,50 @@ function getCardWidth(width: number) {
   );
 }
 
-function SelectedWorkIntro({ compact = false }: { compact?: boolean }) {
+const galleryCopy = {
+  en: {
+    selected: 'Selected work',
+    description: 'Identity systems built to stay clear, coherent, and hard to forget across every touchpoint.',
+    tags: ['Strategy', 'Identity', 'Digital'],
+    headingFirst: 'Bold Builds',
+    headingSecond: 'Brands.',
+    drag: 'Drag to surf',
+    view: 'View',
+  },
+  sq: {
+    selected: 'Punë të përzgjedhura',
+    description: 'Sisteme identiteti të krijuara për të mbetur të qarta, koherente dhe të paharrueshme në çdo pikë kontakti.',
+    tags: ['Strategji', 'Identitet', 'Digjital'],
+    headingFirst: 'Krijojmë Marka',
+    headingSecond: 'Të Guximshme.',
+    drag: 'Tërhiq për të shfletuar',
+    view: 'Shiko',
+  },
+} satisfies Record<Locale, {
+  selected: string;
+  description: string;
+  tags: string[];
+  headingFirst: string;
+  headingSecond: string;
+  drag: string;
+  view: string;
+}>;
+
+function SelectedWorkIntro({
+  compact = false,
+  locale,
+  workCount,
+}: {
+  compact?: boolean;
+  locale: Locale;
+  workCount: number;
+}) {
+  const copy = galleryCopy[locale];
+
   return (
     <>
       <p className="font-mono text-[10px] font-black uppercase tracking-[0.24em] text-[#E37D30]">
-        Selected work / 01-{String(works.length).padStart(2, '0')}
+        {copy.selected} / 01-{String(workCount).padStart(2, '0')}
       </p>
 
       <p
@@ -87,16 +127,14 @@ function SelectedWorkIntro({ compact = false }: { compact?: boolean }) {
             : 'mt-5 text-xl leading-8 text-white/68 xl:text-2xl xl:leading-9'
         }
       >
-        Identity systems built to stay clear, coherent, and hard to forget across every touchpoint.
+        {copy.description}
       </p>
 
       <div
         className={`flex flex-wrap gap-x-6 gap-y-2 border-t border-white/14 font-mono text-[9px] uppercase tracking-[0.18em] text-white/38 ${compact ? 'mt-4 pt-3' : 'mt-8 pt-4'
           }`}
       >
-        <span>Strategy</span>
-        <span>Identity</span>
-        <span>Digital</span>
+        {copy.tags.map((tag) => <span key={tag}>{tag}</span>)}
       </div>
     </>
   );
@@ -177,6 +215,7 @@ type PlaneProps = {
   travel: MotionValue<number>;
   stageWidth: MotionValue<number>;
   stageHeight: MotionValue<number>;
+  locale: Locale;
 };
 
 function Plane({
@@ -188,7 +227,9 @@ function Plane({
   travel,
   stageWidth,
   stageHeight,
+  locale,
 }: PlaneProps) {
+  const copy = galleryCopy[locale];
   const phase = useTransform(travel, (latestTravel) =>
     wrap(0, totalCount, index + latestTravel)
   );
@@ -380,8 +421,8 @@ function Plane({
       >
         <motion.div className="relative" style={{ y: hoverY }}>
           <Link
-            href={`/work/${work.slug}`}
-            aria-label={`View ${work.title}`}
+            href={withLocale(`/work/${work.slug}`, locale)}
+            aria-label={`${copy.view} ${work.title}`}
             draggable={false}
             onClick={handleClick}
             onPointerDown={() => onHoverChange(null)}
@@ -483,7 +524,7 @@ function Plane({
   );
 }
 
-export default function WorkGallery() {
+export default function WorkGallery({ locale = 'en' }: { locale?: Locale }) {
   const isHydrated = useSyncExternalStore(
     subscribeToHydration,
     getClientHydrationSnapshot,
@@ -494,22 +535,24 @@ export default function WorkGallery() {
     return <div className="h-[100svh] min-h-[680px] lg:min-h-[760px]" />;
   }
 
-  return <InteractiveWorkGallery />;
+  return <InteractiveWorkGallery locale={locale} />;
 }
 
-function InteractiveWorkGallery() {
+function InteractiveWorkGallery({ locale }: { locale: Locale }) {
   const router = useRouter();
+  const workItems = getWorks(locale);
+  const copy = galleryCopy[locale];
   const containerRef = useRef<HTMLElement | null>(null);
   const [hoveredPlaneIndex, setHoveredPlaneIndex] = useState<number | null>(
     null
   );
 
   const galleryItems =
-    works.length === 0
+    workItems.length === 0
       ? []
       : Array.from(
-        { length: Math.max(VISIBLE_PLANE_COUNT, works.length) },
-        (_, index) => works[index % works.length]
+        { length: Math.max(VISIBLE_PLANE_COUNT, workItems.length) },
+        (_, index) => workItems[index % workItems.length]
       );
 
   const initialStageWidth = Math.max(
@@ -838,7 +881,7 @@ function InteractiveWorkGallery() {
     const slug = clickedPlane?.dataset.workSlug;
 
     if (slug) {
-      router.push(`/work/${slug}`);
+      router.push(withLocale(`/work/${slug}`, locale));
     }
   }
 
@@ -873,16 +916,16 @@ function InteractiveWorkGallery() {
         className="pointer-events-none absolute left-5 right-5 top-28 z-[2] sm:left-8 sm:right-8 sm:top-32 md:left-10 md:right-10 lg:left-[5%] lg:right-auto lg:top-[161px] lg:w-[min(44vw,680px)]"
       >
         <h1 className="max-w-[11ch] text-5xl font-medium uppercase leading-[0.86] tracking-normal text-white sm:text-6xl md:text-7xl lg:max-w-none lg:text-[clamp(3.6rem,5vw,6rem)] lg:leading-[0.83]">
-          <span className="block">Bold Builds</span>
+          <span className="block">{copy.headingFirst}</span>
 
           <span className="block">
-            Brands.
+            {copy.headingSecond}
             <PageNumber value="02" className="translate-y-2" />
           </span>
         </h1>
 
         <div className="mt-6 max-w-sm lg:hidden">
-          <SelectedWorkIntro compact />
+          <SelectedWorkIntro compact locale={locale} workCount={workItems.length} />
         </div>
       </motion.header>
 
@@ -891,7 +934,7 @@ function InteractiveWorkGallery() {
         className="pointer-events-none absolute left-[5%] z-[2] hidden w-[min(32vw,420px)] lg:block"
         style={{ top: NAVBAR_HEIGHT + 350 }}
       >
-        <SelectedWorkIntro />
+        <SelectedWorkIntro locale={locale} workCount={workItems.length} />
       </motion.aside>
 
       <motion.div
@@ -914,6 +957,7 @@ function InteractiveWorkGallery() {
               travel={travel}
               stageWidth={stageWidth}
               stageHeight={stageHeight}
+              locale={locale}
             />
           ))}
         </div>
@@ -923,7 +967,7 @@ function InteractiveWorkGallery() {
         variants={pageRise}
         className="pointer-events-none absolute bottom-9 right-24 z-[20] hidden text-[9px] font-black uppercase tracking-[0.2em] text-white/65 lg:block"
       >
-        Drag to surf
+        {copy.drag}
       </motion.div>
     </motion.section>
   );

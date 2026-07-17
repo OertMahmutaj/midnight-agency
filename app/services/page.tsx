@@ -7,8 +7,16 @@ import MidnightButton from '@/src/components/MidnightButton';
 import PageNumber from '@/src/components/PageNumber';
 import ServiceCube from '@/src/components/ServiceCube';
 import { pageContainer as container, pageRise as rise } from '@/src/lib/pageMotion';
+import { withLocale, type Locale } from '@/src/lib/i18n';
 
-const services = [
+type Service = {
+  title: string;
+  description: string;
+  items: string[];
+};
+
+const servicesByLocale: Record<Locale, Service[]> = {
+  en: [
   {
     title: 'Branding',
     description: 'Positioning, identity systems, tone of voice, and visual direction for brands that need sharper presence.',
@@ -29,16 +37,58 @@ const services = [
     description: 'Landing pages, UI systems, campaign visuals, and digital experiences shaped for clarity and conversion.',
     items: ['UI Systems', 'Art Direction', 'Launch Assets'],
   },
-];
+  ],
+  sq: [
+    {
+      title: 'Branding',
+      description: 'Pozicionim, sisteme identiteti, ton komunikimi dhe drejtim vizual për marka që kanë nevojë për një prani më të fortë.',
+      items: ['Strategji', 'Identitet', 'Mesazhe'],
+    },
+    {
+      title: 'Web Dev',
+      description: 'Faqe web me performancë të lartë, panele, CMS dhe ndërfaqe interaktive ku motion është pjesë e eksperiencës.',
+      items: ['Next.js', 'CMS', 'Animacion'],
+    },
+    {
+      title: 'SEO',
+      description: 'Strukturë teknike, arkitekturë përmbajtjeje, shpejtësi dhe dukshmëri pa humbur karakterin e markës.',
+      items: ['Strukturë', 'Performancë', 'Përmbajtje'],
+    },
+    {
+      title: 'Dizajn',
+      description: 'Landing pages, sisteme UI, vizuale fushatash dhe eksperienca digjitale të ndërtuara për qartësi dhe konvertim.',
+      items: ['Sisteme UI', 'Drejtim artistik', 'Materiale lançimi'],
+    },
+  ],
+};
 
-const process = [
-  ['01', 'Discover'],
-  ['02', 'Shape'],
-  ['03', 'Build'],
-  ['04', 'Launch'],
-];
+const processByLocale = {
+  en: [['01', 'Discover'], ['02', 'Shape'], ['03', 'Build'], ['04', 'Launch']],
+  sq: [['01', 'Zbulo'], ['02', 'Formëso'], ['03', 'Ndërto'], ['04', 'Lanço']],
+} satisfies Record<Locale, string[][]>;
 
-export default function ServicesPage() {
+const servicesCopy = {
+  en: {
+    eyebrow: 'Services',
+    title: 'What We Build After',
+    midnight: 'Midnight',
+    description: 'Strategy, identity, websites, motion, and systems for brands that need to look sharper and move faster.',
+    cta: 'Start A Project',
+  },
+  sq: {
+    eyebrow: 'Shërbimet',
+    title: 'Çfarë Ndërtojmë Pas',
+    midnight: 'Midnight',
+    description: 'Strategji, identitet, faqe web, motion dhe sisteme për marka që duan të duken më qartë dhe të lëvizin më shpejt.',
+    cta: 'Nis Një Projekt',
+  },
+} satisfies Record<Locale, Record<string, string>>;
+
+export default function ServicesPage({ locale = 'en' }: { locale?: Locale }) {
+  const services = servicesByLocale[locale];
+  const process = processByLocale[locale];
+  const copy = servicesCopy[locale];
+
   return (
     <main className="relative min-h-screen w-full overflow-x-clip px-5 pb-14 pt-28 text-white sm:px-8 sm:pb-20 sm:pt-32 md:px-10 lg:px-16">
       <motion.section
@@ -52,16 +102,16 @@ export default function ServicesPage() {
             variants={rise}
             className="mb-5 text-[10px] font-black uppercase tracking-[0.35em] text-[#E37D30] sm:text-xs"
           >
-            Services
+            {copy.eyebrow}
           </motion.p>
 
           <motion.h1
             variants={rise}
             className="max-w-[11ch] text-[clamp(2.8rem,11vw,7rem)] font-black uppercase leading-[0.8] tracking-[-0.04em] sm:max-w-[12ch] lg:max-w-none"
           >
-            What We Build After{' '}
+            {copy.title}{' '}
             <span className="whitespace-nowrap">
-              Midnight<PageNumber value="03" />
+              {copy.midnight}<PageNumber value="03" />
             </span>
           </motion.h1>
 
@@ -69,11 +119,11 @@ export default function ServicesPage() {
             variants={rise}
             className="mt-6 max-w-xl text-sm leading-7 text-white/62 sm:mt-7 sm:text-base md:text-lg"
           >
-            Strategy, identity, websites, motion, and systems for brands that need to look sharper and move faster.
+            {copy.description}
           </motion.p>
 
           <motion.div variants={rise} className="mt-8 w-full max-w-[16rem] overflow-visible px-2 py-2 sm:px-0 lg:mt-10">
-            <MidnightButton href="/contact">Start A Project</MidnightButton>
+            <MidnightButton href={withLocale('/contact', locale)}>{copy.cta}</MidnightButton>
           </motion.div>
         </div>
 
@@ -88,7 +138,7 @@ export default function ServicesPage() {
               <ambientLight intensity={0.55} />
               <directionalLight position={[10, 10, 5]} intensity={1.15} />
               <Environment files="/hdr/potsdamer_platz_1k.hdr" />
-              <ServiceCube />
+              <ServiceCube locale={locale} />
               <OrbitControls enableZoom={false} enablePan={false} />
             </Canvas>
           </div>

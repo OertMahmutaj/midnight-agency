@@ -2,9 +2,13 @@
 
 import { ArrowUp } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { usePathname } from 'next/navigation';
+import { localeFromPathname } from '@/src/lib/i18n';
 
 export default function ScrollToTopButton() {
   const shouldReduceMotion = useReducedMotion();
+  const pathname = usePathname();
+  const label = localeFromPathname(pathname) === 'sq' ? 'Kthehu lart' : 'Back to top';
 
   function scrollToTop() {
     window.scrollTo({
@@ -16,8 +20,8 @@ export default function ScrollToTopButton() {
   return (
     <motion.button
       type="button"
-      aria-label="Back to top"
-      title="Back to top"
+      aria-label={label}
+      title={label}
       onClick={scrollToTop}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { sendDiscordMessage } from '@/app/actions';
 
-const RATE_LIMIT_WINDOW_MS = 24 * 60 * 60 * 1000;
+const RATE_LIMIT_WINDOW_MS = 2 * 60 * 60 * 1000;
 const fallbackSubmissions = new Map<string, number>();
 
 export async function POST(req: NextRequest) {

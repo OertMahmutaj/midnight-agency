@@ -4,8 +4,9 @@ import { motion } from 'framer-motion';
 import MidnightButton from '@/src/components/MidnightButton';
 import PageNumber from '@/src/components/PageNumber';
 import DeferredServiceCube from '@/src/components/DeferredServiceCube';
+import { openContactModal } from '@/src/lib/contactModal';
 import { pageContainer as container, pageRise as rise } from '@/src/lib/pageMotion';
-import { withLocale, type Locale } from '@/src/lib/i18n';
+import type { Locale } from '@/src/lib/i18n';
 
 type Service = {
   title: string;
@@ -121,7 +122,7 @@ export default function ServicesPage({ locale = 'en' }: { locale?: Locale }) {
             style={{ animationDelay: '460ms' }}
             className="page-rise-entry mt-8 w-full max-w-[16rem] overflow-visible px-2 py-2 sm:px-0 lg:mt-10"
           >
-            <MidnightButton href={withLocale('/contact', locale)}>{copy.cta}</MidnightButton>
+            <MidnightButton type="button" onClick={openContactModal}>{copy.cta}</MidnightButton>
           </div>
         </div>
 

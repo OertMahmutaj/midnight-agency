@@ -8,8 +8,13 @@ import {
   withLocale,
   type Locale,
 } from '@/src/lib/i18n';
+import { openContactModal } from '@/src/lib/contactModal';
 
-type FooterLink = string | { label: string; href: string };
+type FooterLink = string | {
+  label: string;
+  href: string;
+  action?: 'contact';
+};
 
 type FooterColumn = {
   title: string;
@@ -37,7 +42,7 @@ const columnsByLocale: Record<Locale, FooterColumn[]> = {
       // intro: 'Talk to us or ask us anything.',
       links: [
         { label: 'Email', href: 'mailto:midnightcoffee.studio.x@gmail.com' },
-        { label: 'Contact Us', href: '/contact' },
+        { label: 'Contact Us', href: '/contact', action: 'contact' },
         { label: 'Careers', href: '/contact' },
       ],
     },
@@ -69,7 +74,7 @@ const columnsByLocale: Record<Locale, FooterColumn[]> = {
       // intro: 'Flisni me ne ose na pyesni për çdo gjë.',
       links: [
         { label: 'hello@midnight.studio', href: 'mailto:hello@midnight.studio' },
-        { label: 'Na Kontakto', href: '/contact' },
+        { label: 'Na Kontakto', href: '/contact', action: 'contact' },
         { label: 'Karriera', href: '/contact' },
       ],
     },
@@ -119,15 +124,27 @@ export default function Footer() {
                 {column.links.map((item) => {
                   const label = typeof item === 'string' ? item : item.label;
                   const baseHref = typeof item === 'string' ? '#' : item.href;
+                  const opensContactModal = typeof item !== 'string' && item.action === 'contact';
                   const href = baseHref.startsWith('/')
                     ? withLocale(baseHref, locale)
                     : baseHref;
+                  const linkClassName = 'group inline-flex max-w-full cursor-pointer items-start gap-2 break-words text-left transition-colors duration-300 hover:text-[#E37D30]';
 
                   return (
                     <li key={label} className="min-w-0">
-                      <Link href={href} className="group inline-flex max-w-full items-start gap-2 break-words transition-colors duration-300 hover:text-[#E37D30]">
-                        <span className="min-w-0 break-all sm:break-words">{label}</span>
-                      </Link>
+                      {opensContactModal ? (
+                        <button
+                          type="button"
+                          onClick={openContactModal}
+                          className={linkClassName}
+                        >
+                          <span className="min-w-0 break-all sm:break-words">{label}</span>
+                        </button>
+                      ) : (
+                        <Link href={href} className={linkClassName}>
+                          <span className="min-w-0 break-all sm:break-words">{label}</span>
+                        </Link>
+                      )}
                     </li>
                   );
                 })}

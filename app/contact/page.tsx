@@ -1,8 +1,8 @@
 'use client';
 
-import DeferredContactCube from '@/src/components/DeferredContactCube';
 import MidnightButton from '@/src/components/MidnightButton';
 import PageNumber from '@/src/components/PageNumber';
+import { openContactModal } from '@/src/lib/contactModal';
 import type { Locale } from '@/src/lib/i18n';
 
 const contactCopy = {
@@ -12,7 +12,6 @@ const contactCopy = {
     titleSecond: 'Touch',
     intro: 'Tell us what you are building, what needs to move faster, or what needs a sharper first impression.',
     cta: 'Contact Us',
-    aside: 'It is very important for us to keep in touch with you, so we are always ready to answer any question that interests you. Shoot.',
   },
   sq: {
     eyebrow: 'Kontakt',
@@ -20,16 +19,11 @@ const contactCopy = {
     titleSecond: 'Kontakto',
     intro: 'Na tregoni çfarë po ndërtoni, çfarë duhet të ecë më shpejt ose çfarë ka nevojë për një përshtypje të parë më të fortë.',
     cta: 'Na Kontakto',
-    aside: 'Për ne është shumë e rëndësishme të qëndrojmë në kontakt me ju, ndaj jemi gjithmonë gati t’i përgjigjemi çdo pyetjeje që ju intereson. Flisni me ne.',
   },
 } satisfies Record<Locale, Record<string, string>>;
 
 export default function ContactPage({ locale = 'en' }: { locale?: Locale }) {
   const copy = contactCopy[locale];
-
-  function openContactModal() {
-    window.dispatchEvent(new CustomEvent('midnight:open-contact'));
-  }
 
   return (
     <main
@@ -64,19 +58,6 @@ export default function ContactPage({ locale = 'en' }: { locale?: Locale }) {
           </div>
         </div>
 
-        <div className="relative grid min-h-[330px] min-w-0 content-center sm:min-h-[430px] lg:min-h-[560px]">
-          <div className="absolute left-1/2 top-5 h-[250px] w-[250px] max-w-[78vw] -translate-x-1/2 sm:top-8 sm:h-[340px] sm:w-[340px] lg:left-[8%] lg:top-[6%] lg:h-[430px] lg:w-[430px] lg:translate-x-0">
-            <div className="page-rise-entry h-full w-full rounded-[46%_54%_58%_42%/45%_42%_58%_55%] border border-white/18 [animation-delay:560ms]" />
-          </div>
-
-          <div className="page-rise-entry relative z-10 mx-auto h-[280px] w-full max-w-[320px] touch-pan-y sm:h-[370px] sm:max-w-[450px] lg:h-[520px] lg:max-w-none [animation-delay:560ms]">
-            <DeferredContactCube locale={locale} />
-          </div>
-
-          <p className="page-rise-entry relative z-10 mx-auto mt-3 w-full max-w-[22rem] text-center text-sm leading-7 text-white/72 lg:-mt-8 lg:ml-[22%] lg:mr-0 lg:text-left [animation-delay:660ms]">
-            {copy.aside}
-          </p>
-        </div>
       </section>
     </main>
   );

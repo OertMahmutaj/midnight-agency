@@ -6,12 +6,12 @@ import { useTexture } from '@react-three/drei';
 import { Mesh, SRGBColorSpace, type Texture } from 'three';
 
 const cubeFaces = [
-  '/cube/01.webp',
-  '/cube/02.webp',
-  '/cube/03.webp',
-  '/cube/04.webp',
-  '/cube/05.webp',
-  '/cube/06.webp',
+  '/cube/01.webp?v=20260719',
+  '/cube/02.webp?v=20260719',
+  '/cube/03.webp?v=20260719',
+  '/cube/04.webp?v=20260719',
+  '/cube/05.webp?v=20260719',
+  '/cube/06.webp?v=20260719',
 ];
 
 const ROTATION_SPEED = 0.3;

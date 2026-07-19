@@ -66,7 +66,7 @@ export const works: WorkItem[] = [
       'Local SEO strategy and optimization',
     ],
     image: '/work/jc-detailing/01.webp',
-    gallery: numberedImages('jc-detailing', 2, 6),
+    gallery: numberedImages('jc-detailing', 2, 7),
   },
   {
     slug: 'nerguti',
@@ -89,7 +89,7 @@ export const works: WorkItem[] = [
       'Promotional collateral',
     ],
     image: '/work/nerguti/01.webp',
-    gallery: numberedImages('nerguti', 2, 12),
+    gallery: numberedImages('nerguti', 2, 11),
   },
   {
     slug: 'optimus-pharma',
@@ -113,7 +113,7 @@ export const works: WorkItem[] = [
       'Social media design system',
     ],
     image: '/work/optimus-pharma/01.webp',
-    gallery: numberedImages('optimus-pharma', 2, 8),
+    gallery: numberedImages('optimus-pharma', 2, 9),
   },
   {
     slug: 'skanderbeg',
@@ -161,7 +161,7 @@ export const works: WorkItem[] = [
       'Logo update',
     ],
     image: '/work/skonitech/01.webp',
-    gallery: numberedImages('skonitech', 2, 6),
+    gallery: numberedImages('skonitech', 2, 7),
   },
   {
     slug: 'vp-consulting',
@@ -183,7 +183,7 @@ export const works: WorkItem[] = [
       'Visual style guide',
     ],
     image: '/work/vp-consulting/01.webp',
-    gallery: numberedImages('vp-consulting', 2, 10),
+    gallery: numberedImages('vp-consulting', 2, 9),
   },
 ];
 
@@ -230,7 +230,7 @@ export const worksSq: WorkItem[] = [
       'Strategji dhe optimizim SEO lokal',
     ],
     image: '/work/jc-detailing/01.webp',
-    gallery: numberedImages('jc-detailing', 2, 6),
+    gallery: numberedImages('jc-detailing', 2, 7),
   },
   {
     slug: 'nerguti',
@@ -253,7 +253,7 @@ export const worksSq: WorkItem[] = [
       'Materiale promocionale',
     ],
     image: '/work/nerguti/01.webp',
-    gallery: numberedImages('nerguti', 2, 12),
+    gallery: numberedImages('nerguti', 2, 11),
   },
   {
     slug: 'optimus-pharma',
@@ -277,7 +277,7 @@ export const worksSq: WorkItem[] = [
       'Sistem dizajni për rrjetet sociale',
     ],
     image: '/work/optimus-pharma/01.webp',
-    gallery: numberedImages('optimus-pharma', 2, 8),
+    gallery: numberedImages('optimus-pharma', 2, 9),
   },
   {
     slug: 'skanderbeg',
@@ -325,7 +325,7 @@ export const worksSq: WorkItem[] = [
       'Përditësim logoje',
     ],
     image: '/work/skonitech/01.webp',
-    gallery: numberedImages('skonitech', 2, 6),
+    gallery: numberedImages('skonitech', 2, 7),
   },
   {
     slug: 'vp-consulting',
@@ -347,7 +347,7 @@ export const worksSq: WorkItem[] = [
       'Udhëzues i stilit vizual',
     ],
     image: '/work/vp-consulting/01.webp',
-    gallery: numberedImages('vp-consulting', 2, 10),
+    gallery: numberedImages('vp-consulting', 2, 9),
   },
 ];
 

@@ -228,18 +228,38 @@ export default function HomePage({ locale = 'en' }: { locale?: Locale }) {
               sm:leading-[0.86]
             "
           >
-            {copy.lead}{' '}
-            <WordScrambleText
-              value={copy.success}
-              hoverValue={copy.successHover}
-              className="inline-grid cursor-pointer normal-case text-[#E37D30]"
-            />{' '}
-            {copy.bridge}{' '}
-            <WordScrambleText
-              value={copy.bold}
-              hoverValue={copy.boldHover}
-              className="inline-grid cursor-pointer normal-case text-[#E37D30]"
-            />
+            <span className="block">{copy.lead}</span>
+
+            <span className="block">
+              <WordScrambleText
+                value={copy.success}
+                hoverValue={copy.successHover}
+                className="cursor-pointer normal-case text-[#E37D30]"
+              />
+            </span>
+
+            {locale === 'en' ? (
+              <span className="block">
+                {copy.bridge}{' '}
+                <WordScrambleText
+                  value={copy.bold}
+                  hoverValue={copy.boldHover}
+                  className="cursor-pointer normal-case text-[#E37D30]"
+                />
+              </span>
+            ) : (
+              <>
+                <span className="block">{copy.bridge}</span>
+
+                <span className="block">
+                  <WordScrambleText
+                    value={copy.bold}
+                    hoverValue={copy.boldHover}
+                    className="cursor-pointer normal-case text-[#E37D30]"
+                  />
+                </span>
+              </>
+            )}
           </motion.h1>
 
           <motion.div

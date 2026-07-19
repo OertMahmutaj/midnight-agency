@@ -886,18 +886,22 @@ function InteractiveWorkGallery({ locale }: { locale: Locale }) {
           </span>
         </h1>
 
-        <div className="mt-6 max-w-sm lg:hidden">
+        <div
+          className={`mt-6 max-w-sm ${locale === 'sq' ? 'lg:mt-14 lg:block' : 'lg:hidden'}`}
+        >
           <SelectedWorkIntro compact locale={locale} workCount={workItems.length} />
         </div>
       </motion.header>
 
-      <motion.aside
-        variants={pageRise}
-        className="pointer-events-none absolute left-[5%] z-[2] hidden w-[min(32vw,420px)] lg:block"
-        style={{ top: NAVBAR_HEIGHT + 350 }}
-      >
-        <SelectedWorkIntro locale={locale} workCount={workItems.length} />
-      </motion.aside>
+      {locale === 'en' ? (
+        <motion.aside
+          variants={pageRise}
+          className="pointer-events-none absolute left-[5%] z-[2] hidden w-[min(32vw,420px)] lg:block"
+          style={{ top: NAVBAR_HEIGHT + 350 }}
+        >
+          <SelectedWorkIntro locale={locale} workCount={workItems.length} />
+        </motion.aside>
+      ) : null}
 
       <motion.div
         variants={pageRise}

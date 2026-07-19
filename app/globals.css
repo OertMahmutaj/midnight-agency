@@ -69,6 +69,12 @@
   }
 }
 
+html[lang="sq"] h1,
+html[lang="sq"] h2,
+html[lang="sq"] h3 {
+  line-height: 1.02;
+}
+
 /*
   Disable the fixed full-screen grain layer.
 

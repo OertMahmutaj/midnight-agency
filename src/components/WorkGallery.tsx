@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Grid2X2 } from 'lucide-react';
 import {
   AnimatePresence,
   animate,
@@ -85,6 +86,7 @@ const galleryCopy = {
     headingSecond: 'Brands.',
     drag: 'Drag to surf',
     view: 'View',
+    viewAll: 'View all projects',
   },
   sq: {
     selected: 'Punë të përzgjedhura',
@@ -94,6 +96,7 @@ const galleryCopy = {
     headingSecond: 'Të Guximshme.',
     drag: 'Tërhiq për të shfletuar',
     view: 'Shiko',
+    viewAll: 'Shiko të gjitha',
   },
 } satisfies Record<Locale, {
   selected: string;
@@ -103,6 +106,7 @@ const galleryCopy = {
   headingSecond: string;
   drag: string;
   view: string;
+  viewAll: string;
 }>;
 
 function SelectedWorkIntro({
@@ -118,9 +122,20 @@ function SelectedWorkIntro({
 
   return (
     <>
-      <p className="font-mono text-[10px] font-black uppercase tracking-[0.24em] text-[#E37D30]">
-        {copy.selected} / 01-{String(workCount).padStart(2, '0')}
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="font-mono text-[10px] font-black uppercase tracking-[0.24em] text-[#E37D30]">
+          {copy.selected} / 01-{String(workCount).padStart(2, '0')}
+        </p>
+
+        <Link
+          href={withLocale('/work/all', locale)}
+          prefetch={false}
+          className="pointer-events-auto inline-flex h-8 items-center gap-2 rounded-[2px] border border-white/20 px-3 text-[9px] font-black uppercase tracking-[0.12em] text-white transition-colors hover:border-[#E37D30] hover:bg-[#E37D30] hover:text-black"
+        >
+          <Grid2X2 className="size-3" strokeWidth={1.8} />
+          {copy.viewAll}
+        </Link>
+      </div>
 
       <p
         className={
@@ -296,10 +311,17 @@ function Plane({
       const height = Number(latestHeight);
       const width = Number(latestWidth);
       const edgeY = height + CARD_EDGE_PADDING;
+      const compactAlbanianOffset = locale === 'sq'
+        ? width < 640
+          ? 110
+          : width < 1024
+            ? 140
+            : 0
+        : 0;
       const centerY = width < 640
-        ? Math.max(290, height * 0.42)
+        ? Math.max(290, height * 0.42) + compactAlbanianOffset
         : width < 1024
-          ? Math.max(320, height * 0.44)
+          ? Math.max(320, height * 0.44) + compactAlbanianOffset
           : Math.max(32, height * 0.18) + CAROUSEL_Y_OFFSET;
       const arch = Math.pow(
         Math.max(0, Math.sin(progressValue * Math.PI)),
@@ -887,7 +909,7 @@ function InteractiveWorkGallery({ locale }: { locale: Locale }) {
         </h1>
 
         <div
-          className={`mt-6 max-w-sm ${locale === 'sq' ? 'lg:mt-14 lg:block' : 'lg:hidden'}`}
+          className={`max-w-sm ${locale === 'sq' ? 'mt-10 sm:mt-12 lg:mt-14 lg:block' : 'mt-6 lg:hidden'}`}
         >
           <SelectedWorkIntro compact locale={locale} workCount={workItems.length} />
         </div>
@@ -905,7 +927,7 @@ function InteractiveWorkGallery({ locale }: { locale: Locale }) {
 
       <motion.div
         variants={pageRise}
-        className="absolute inset-x-0 bottom-0 z-10 overflow-hidden"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 overflow-hidden"
         style={{
           top: NAVBAR_HEIGHT,
           isolation: 'isolate',

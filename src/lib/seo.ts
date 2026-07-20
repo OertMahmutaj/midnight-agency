@@ -9,7 +9,7 @@ export const SITE_DESCRIPTION_SQ =
   'Midnight është një agjenci digjitale në Tiranë që krijon identitete marke, faqe web me performancë të lartë, SEO, motion dhe eksperienca digjitale për biznese ambicioze.';
 
 export const SITE_URL = new URL(
-  process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'https://midnight.studio'
+  process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'https://midnight-coffee.agency'
 );
 
 type SocialImage = {
